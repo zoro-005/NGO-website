@@ -3,7 +3,7 @@
  	easing: 'slide'
  });
 
-(function($) {
+$(document).ready(function($) {
 
 	"use strict";
 
@@ -17,16 +17,6 @@
   });
 
 
-	var fullHeight = function() {
-
-		$('.js-fullheight').css('height', $(window).height());
-		$(window).resize(function(){
-			$('.js-fullheight').css('height', $(window).height());
-		});
-
-	};
-	fullHeight();
-
 	// loader
 	var loader = function() {
 		setTimeout(function() { 
@@ -37,61 +27,105 @@
 	};
 	loader();
 
-	// Scrollax
-   $.Scrollax();
-
 	var carousel = function() {
-		$('.carousel-cause').owlCarousel({
-			autoplay: true,
-			center: true,
+		$('.carousel').owlCarousel({
 			loop: true,
-			items:1,
-			margin: 30,
-			stagePadding:0,
+			margin: 10,
 			nav: true,
-			navText: ['<span class="ion-ios-arrow-back">', '<span class="ion-ios-arrow-forward">'],
+			stagePadding: 5,
+			nav: false,
+			navText: ['<span class="ion-md-arrow-back">', '<span class="ion-md-arrow-forward">'],
 			responsive:{
 				0:{
-					items: 1,
-					stagePadding: 0
+					items: 1
 				},
 				600:{
-					items: 2,
-					stagePadding: 50
+					items: 2
 				},
 				1000:{
-					items: 3,
-					stagePadding: 100
+					items: 3
 				}
 			}
 		});
 
+		$('.nonloop-block-13').owlCarousel({
+	    center: false,
+	    items: 1,
+	    loop: false,
+			stagePadding: 0,
+	    margin: 20,
+	    nav: true,
+			navText: ['<span class="ion-md-arrow-back">', '<span class="ion-md-arrow-forward">'],
+	    responsive:{
+        600:{
+        	margin: 20,
+          items: 2
+        },
+        1000:{
+        	margin: 20,
+          items: 2
+        },
+        1200:{
+        	margin: 20,
+          items: 3
+        }
+	    }
+		});
+
+		$('.loop-block-31').owlCarousel({
+			loop: false,
+			mouseDrag: false,
+			touchDrag: false,
+			margin: 0,
+			nav: true,
+			items: 1,
+			autoplay: true,
+			stagePadding: 0,
+			nav: true,
+			navText: ['<span class="ion-md-arrow-back">', '<span class="ion-md-arrow-forward">'],
+			animateOut: 'fadeOut',
+    	animateIn: 'fadeIn',
+		});
+
+		$('.nonloop-block-11').owlCarousel({
+	    center: true,
+	    items: 1,
+	    loop: false,
+			stagePadding: 0,
+	    margin: 30,
+	    nav: true,
+			navText: ['<span class="ion-md-arrow-back">', '<span class="ion-md-arrow-forward">'],
+	    responsive:{
+        600:{
+        	stagePadding: 0,
+          items:1
+        },
+        800:{
+        	stagePadding: 40,
+          items:2
+        },
+        1000:{
+        	stagePadding: 80,
+          items:3
+        }
+	    }
+		});
+
+		$('.nonloop').owlCarousel({
+	    center: true,
+	    items:2,
+	    loop:false,
+	    margin:10,
+	    nav: true,
+			navText: ['<span class="icon-arrow_back">', '<span class="icon-arrow_forward">'],
+	    responsive:{
+        600:{
+          items:2
+        }
+	    }
+		});
 	};
 	carousel();
-
-	$('nav .dropdown').hover(function(){
-		var $this = $(this);
-		// 	 timer;
-		// clearTimeout(timer);
-		$this.addClass('show');
-		$this.find('> a').attr('aria-expanded', true);
-		// $this.find('.dropdown-menu').addClass('animated-fast fadeInUp show');
-		$this.find('.dropdown-menu').addClass('show');
-	}, function(){
-		var $this = $(this);
-			// timer;
-		// timer = setTimeout(function(){
-			$this.removeClass('show');
-			$this.find('> a').attr('aria-expanded', false);
-			// $this.find('.dropdown-menu').removeClass('animated-fast fadeInUp show');
-			$this.find('.dropdown-menu').removeClass('show');
-		// }, 100);
-	});
-
-
-	$('#dropdown04').on('show.bs.dropdown', function () {
-	  console.log('show');
-	});
 
 	// scroll
 	var scrollWindow = function() {
@@ -133,36 +167,14 @@
 	};
 	scrollWindow();
 
-	var isMobile = {
-		Android: function() {
-			return navigator.userAgent.match(/Android/i);
-		},
-			BlackBerry: function() {
-			return navigator.userAgent.match(/BlackBerry/i);
-		},
-			iOS: function() {
-			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-		},
-			Opera: function() {
-			return navigator.userAgent.match(/Opera Mini/i);
-		},
-			Windows: function() {
-			return navigator.userAgent.match(/IEMobile/i);
-		},
-			any: function() {
-			return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-		}
-	};
-
-	
 	var counter = function() {
 		
-		$('#section-counter').waypoint( function( direction ) {
+		$('.section-counter').waypoint( function( direction ) {
 
 			if( direction === 'down' && !$(this.element).hasClass('ftco-animated') ) {
 
 				var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',')
-				$('.number').each(function(){
+				$(this.element).find('.ftco-number').each(function(){
 					var $this = $(this),
 						num = $this.data('number');
 						console.log(num);
@@ -180,6 +192,8 @@
 
 	}
 	counter();
+	
+	
 
 	var contentWayPoint = function() {
 		var i = 0;
@@ -216,7 +230,6 @@
 		} , { offset: '95%' } );
 	};
 	contentWayPoint();
-
 
 	// navigation
 	var OnePageNav = function() {
@@ -274,16 +287,12 @@
     fixedContentPos: false
   });
 
-
-  $('#appointment_date').datepicker({
-	  'format': 'm/d/yyyy',
+  $('#checkin_date, #checkout_date').datepicker({
+	  'format': 'd MM, yyyy',
 	  'autoclose': true
 	});
 
-	$('#appointment_time').timepicker();
 
 
-
-
-})(jQuery);
+});
 

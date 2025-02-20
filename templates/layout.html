@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Sankalap Ek Sewa Foundation &mdash; Website Template by Colorlib</title>
+    <title>Sankalap Ek Sewa Foundation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -27,7 +27,11 @@
     
   <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-      <a class="navbar-brand" href="/">GiveHope</a>
+      <div>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo"> 
+        <a class="navbar-brand" href="/">S.E.S.F</a>
+      </div>
+      
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="oi oi-menu"></span> Menu
       </button>
@@ -35,13 +39,14 @@
       <div class="collapse navbar-collapse" id="ftco-nav">
 
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a href="/" class="nav-link">Home</a></li>
-                <li class="nav-item {% if request.path == '/how-it-works' %}active{% endif %}"><a href="/how-it-works" class="nav-link">How It Works</a></li>
-                <li class="nav-item {% if request.path == '/donate' %}active{% endif %}"><a href="/donate" class="nav-link">Donate</a></li>
+                <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a href="/" class="nav-link">Home</a></li>               
                 <li class="nav-item {% if request.path == '/gallery' %}active{% endif %}"><a href="/gallery" class="nav-link">Gallery</a></li>
                 <li class="nav-item {% if request.path == '/blog' %}active{% endif %}"><a href="/blog" class="nav-link">Blog</a></li>
                 <li class="nav-item {% if request.path == '/about' %}active{% endif %}"><a href="/about" class="nav-link">About</a></li>
-                <li class="nav-item {% if request.path == '/contact' %}active{% endif %}"><a href="/contact" class="nav-link">Contact</a></li>
+                <li class="nav-item {% if request.path == '/contact' %}active{% endif %}"><a href="/contact" class="nav-link">Contact Us</a></li>
+                <li class="nav-item {% if request.path == '/how-it-works' %}active{% endif %}"><a href="/how-it-works" class="nav-link">Join Us</a></li>
+                <li class="nav-item {% if request.path == '/donate' %}active{% endif %}"><a href="/donate" class="nav-link donate-button-header">Donate</a></li>
+                
               </ul>
        
       </div>

@@ -42,8 +42,8 @@ h1, h2, h3, h4, h5,
       position: relative; } }
   .ftco-navbar-light .navbar-nav > .nav-item > .nav-link {
     font-size: 14px;
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
     color: #f0f0f0;
@@ -289,7 +289,7 @@ h1, h2, h3, h4, h5,
 
 .block-48 {
   background: #f7ca44;
-  padding: 50px;
+  padding: 90px;
   color: #000; }
   .block-48 .block-48-text-1 {
     font-size: 30px; }
@@ -1967,3 +1967,39 @@ textarea.form-control {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+
+/* Donate button styles */
+.donate-button-header {
+  background-color: #f7ca44; 
+  color: #fff; /* White text */
+  padding: 10px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+.donate-button-header:hover {
+  background-color: #f7ca44; 
+}
+
+/* Header styles for white background on scroll */
+#ftco-navbar.scrolled {
+  background-color: #fff; /* White background */
+  transition: background-color 0.3s ease;
+}
+
+#ftco-navbar.scrolled .nav-link {
+  color: #000; /* Black text for links */
+}
+
+#ftco-navbar.scrolled .donate-button-header {
+  background-color: #f7ca44; 
+  color: #fff; /* White text */
+}
+/* Logo styles */
+.logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}

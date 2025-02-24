@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -15,6 +15,14 @@ class Contact(db.Model):
     subject = db.Column(db.String(40), nullable=True)
     date = db.Column(db.String(20), nullable=False)
     message = db.Column(db.String(200), nullable=False)
+
+class Volunteer(db.Model):
+    sno = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    phone = db.Column(db.String(40), nullable=False)
+    date = db.Column(db.String(20), nullable=False)
+    reason = db.Column(db.String(200), nullable=False)
 
 @app.route('/')
 def home():
@@ -40,6 +48,7 @@ def blog_single():
 def blog():
     return render_template('blog.html')
 
+
 @app.route('/contact', methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
@@ -52,11 +61,27 @@ def contact():
         db.session.add(entry)
         db.session.commit()
 
-    return render_template('contact.html')
+        flash('Message sent successfully!')
+        return redirect(url_for('contact', success_message=True))
 
+    success_message = request.args.get('success_message')
+    return render_template('contact.html', success_message=success_message)
 @app.route('/donate')
 def donate():
     return render_template('donate.html')
+@app.route('/join_us',methods=["GET","POST"])
+def join_us():
+    if request.method=="POST":
+        name=request.form.get('name')
+        email=request.form.get('email')
+        phone=request.form.get('phone')
+        reason=request.form.get('reason')
+        entry=Volunteer(name=name,email=email,phone=phone,reason=reason,date=datetime.now())
+        db.session.add(entry)
+        db.session.commit()
+        return redirect('/how-it-works')
+    return render_template('how-it-works.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -24,7 +24,7 @@
 
             <div class="col-md-6 pl-md-5">
                 <div class="form-volunteer">
-                    <h2>Be A Volunteer Today</h2>
+                    <h2 style = "font-weight: 900;">Be A Volunteer Today</h2>
                     <form action="/join_us" method="post" onsubmit="return validateForm()">
                         <div class="form-group">
                             <input type="text" class="form-control px-3 py-3" name="name" id="name" placeholder="Your Name" required>
@@ -56,10 +56,10 @@
         var message = document.getElementById("message").value.trim();
 
         // Check if any field is empty
-        if (!name || !email || !phone || !message) {
-            alert("All fields must be filled out");
-            return false;
-        }
+        // if (!name || !email || !phone || !message) {
+        //     alert("All fields must be filled out");
+        //     return false;
+        // }
 
         // Email validation regex
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

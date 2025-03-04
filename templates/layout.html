@@ -39,7 +39,6 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a href="/" class="nav-link">Home</a></li>               
                 <li class="nav-item {% if request.path == '/gallery' %}active{% endif %}"><a href="/gallery" class="nav-link">Gallery</a></li>
-                <li class="nav-item {% if request.path == '/blog' %}active{% endif %}"><a href="/blog" class="nav-link">Blog</a></li>
                 <li class="nav-item {% if request.path == '/about' %}active{% endif %}"><a href="/about" class="nav-link">About</a></li>
                 <li class="nav-item {% if request.path == '/contact' %}active{% endif %}"><a href="/contact" class="nav-link">Contact Us</a></li>
                 <li class="nav-item {% if request.path == '/how-it-works' %}active{% endif %}"><a href="/how-it-works" class="nav-link">Join Us</a></li>
@@ -132,7 +131,7 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 70px;
       text-align: left;
       width: 100%;
     }

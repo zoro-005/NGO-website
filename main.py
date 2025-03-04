@@ -44,10 +44,6 @@ def gallery():
 def blog_single():
     return render_template('blog-single.html')
 
-@app.route('/blog')
-def blog():
-    return render_template('blog.html')
-
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact():

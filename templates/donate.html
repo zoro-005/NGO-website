@@ -9,7 +9,7 @@
             <div class="col-md-8">
               <h2 class="heading text-white text-4xl font-bold">Your Support Changes Lives</h2>
               <p class="lead text-white mt-3">Every donation helps us provide clean water, education, and shelter to those in need.</p>
-              <a href="#donate-section" class="btn btn-primary mt-4 px-5 py-3">Donate Now</a>
+              <button id="donate-now-btn" class="btn btn-primary mt-4 px-5 py-3" onclick="smoothScroll('#donate-section')">Donate Now</button>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="col-md-6">
           <div class="card shadow-sm p-4">
             <h3 class="text-center mb-4">Donate Now</h3>
-            <form action="/process-donation" method="post" class="needs-validation" novalidate>
+            <form id="donation-form" class="needs-validation" novalidate>
               <div class="form-group mb-3">
                 <label for="donor-name" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="donor-name" placeholder="Enter your name" required>
@@ -49,115 +49,38 @@
                   <button type="button" class="btn btn-outline-primary donation-amount" data-amount="2000">₹2000</button>
                   <button type="button" class="btn btn-outline-primary donation-amount" data-amount="5000">₹5000</button>
                 </div>
-                <input type="number" class="form-control" id="custom-amount" placeholder="Or enter custom amount" min="1">
+                <input type="number" class="form-control" id="custom-amount" placeholder="Or enter custom amount" min="1" required>
               </div>
-              <!-- <div class="form-group mb-3">
-                <label for="donation-cause" class="form-label">Support a Cause</label>
-                <select class="form-control" id="donation-cause" required>
-                  <option value="" disabled selected>Select a cause</option>
-                  <option value="water">Clean Water Initiative</option>
-                  <option value="education">Education for Children</option>
-                  <option value="shelter">Shelter for Families</option>
-                </select>
-              </div> -->
-              <button type="submit" class="btn btn-primary w-100 py-3">Proceed to Payment</button>
+              <button type="button" class="btn btn-primary w-100 py-3" onclick="initiateDonation()">Proceed to Payment</button>
             </form>
-            <!-- Donation Progress -->
-            <!-- <div class="mt-4">
-              <p class="text-center">Our Goal: $10,000</p>
-              <div class="progress">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
-              </div>
-              <p class="text-center mt-2">$6,500 raised so far!</p>
-            </div> -->
           </div>
         </div>
       </div>
 
       <!-- Latest Donations -->
-      <div class="row mt-5">
-        <div class="col-md-12 text-center">
-          <h3 class="text-2xl font-bold">Recent Supporters</h3>
+      <div style="margin-top: 2rem;">
+        <div style="text-align: center;">
+          <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Recent Supporters</h3>
         </div>
-        <div class="row mt-4">
-          <div class="col-md-6 col-lg-3 mb-4">
-            <div class="person-donate text-center card shadow-sm p-3">
-              <img src="images/person_1.jpg" alt="Donor" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px;">
-              <div class="donate-info">
-                <h4>Jorge Smith</h4>
-                <span class="time d-block mb-2 text-muted">Donated Just now</span>
-                <p>Donated <span class="text-success">$252</span> <br> <em>for</em> <a href="#" class="link-underline">Clean Water Initiative</a></p>
-              </div>
-            </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+          {% for donor in donors %}
+          <div style="flex: 1 1 250px; max-width: 250px; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; text-align: center;">
+            <h4 style="font-size: 1.125rem; font-weight: 600; margin: 0 0 0.5rem; white-space: normal;">{{ donor.name }}</h4>
+            <span style="display: block; color: #6c757d; font-size: 0.875rem; margin-bottom: 0.5rem; white-space: normal;">Donated {{ donor.date.strftime('%b %d, %Y') }}</span>
+            <p style="font-size: 1rem; margin: 0; white-space: normal;">Donated <span style="color: #28a745; font-weight: bold;">₹{{ donor.amount|int }}</span></p>
           </div>
-          <div class="col-md-6 col-lg-3 mb-4">
-            <div class="person-donate text-center card shadow-sm p-3">
-              <img src="images/person_2.jpg" alt="Donor" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px;">
-              <div class="donate-info">
-                <h4>Christine Charles</h4>
-                <span class="time d-block mb-2 text-muted">Donated 1 hour ago</span>
-                <p>Donated <span class="text-success">$400</span> <br> <em>for</em> <a href="#" class="link-underline">Education for Children</a></p>
-              </div>
-            </div>
+          {% else %}
+          <div style="text-align: center; width: 100%;">
+            <p style="color: #6c757d; font-size: 1rem;">No recent donations yet. Be the first to support our cause!</p>
           </div>
-          <div class="col-md-6 col-lg-3 mb-4">
-            <div class="person-donate text-center card shadow-sm p-3">
-              <img src="images/person_3.jpg" alt="Donor" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px;">
-              <div class="donate-info">
-                <h4>Albert Sluyter</h4>
-                <span class="time d-block mb-2 text-muted">Donated 4 hours ago</span>
-                <p>Donated <span class="text-success">$1,200</span> <br> <em>for</em> <a href="#" class="link-underline">Shelter for Families</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-3 mb-4">
-            <div class="person-donate text-center card shadow-sm p-3">
-              <img src="images/person_4.jpg" alt="Donor" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px;">
-              <div class="donate-info">
-                <h4>Andrew Holloway</h4>
-                <span class="time d-block mb-2 text-muted">Donated 9 hours ago</span>
-                <p>Donated <span class="text-success">$100</span> <br> <em>for</em> <a href="#" class="link-underline">Clean Water Initiative</a></p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="text-center mt-4">
-          <a href="#" class="link-underline text-primary">View All Donations</a>
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Volunteer Section -->
-  <!-- <div class="featured-section overlay-color-2 py-5" style="background-image: url('images/bg_2.jpg');">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-6 mb-5 mb-md-0">
-          <img src="images/bg_2.jpg" alt="Volunteer" class="img-fluid rounded">
-        </div>
-        <div class="col-md-6 pl-md-5">
-          <div class="form-volunteer">
-            <h2 class="text-3xl font-bold text-white">Join Us as a Volunteer</h2>
-            <p class="text-white mb-4">Your time and skills can make a huge impact. Sign up to volunteer with us!</p>
-            <form action="/volunteer" method="post" class="needs-validation" novalidate>
-              <div class="form-group mb-3">
-                <input type="text" class="form-control py-3" id="volunteer-name" placeholder="Enter your name" required>
-              </div>
-              <div class="form-group mb-3">
-                <input type="email" class="form-control py-3" id="volunteer-email" placeholder="Enter your email" required>
-              </div>
-              <div class="form-group mb-3">
-                <textarea name="volunteer-message" id="volunteer-message" cols="30" rows="4" class="form-control py-3" placeholder="Tell us why you want to volunteer" required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary px-5 py-3">Sign Up</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-  <!-- JavaScript for Donation Amount Selection -->
+  <!-- JavaScript -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     document.querySelectorAll('.donation-amount').forEach(button => {
       button.addEventListener('click', () => {
@@ -173,13 +96,97 @@
       const forms = document.querySelectorAll('.needs-validation');
       Array.from(forms).forEach(form => {
         form.addEventListener('submit', event => {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+          event.preventDefault();
+          event.stopPropagation();
           form.classList.add('was-validated');
         }, false);
       });
     })();
+
+    function initiateDonation() {
+      const form = document.getElementById('donation-form');
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+
+      const donorName = document.getElementById('donor-name').value;
+      const donorEmail = document.getElementById('donor-email').value;
+      const amount = document.getElementById('custom-amount').value;
+
+      fetch('/process-donation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'donor-name': donorName,
+          'donor-email': donorEmail,
+          'custom-amount': amount
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.order_id) {
+          openRazorpayCheckout(data.order_id, amount, donorName, donorEmail);
+        } else {
+          alert('Failed to create donation order: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing your donation.');
+      });
+    }
+
+    function openRazorpayCheckout(orderId, amount, name, email) {
+      const options = {
+        "key": "{{ key_id }}",
+        "amount": amount * 100,
+        "currency": "INR",
+        "name": "Your NGO Name",
+        "description": "Donation",
+        "image": "/static/images/ngo-logo.png",
+        "order_id": orderId,
+        "handler": function (response) {
+          fetch('/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'success') {
+              window.location.href = data.redirect_url;
+            } else {
+              alert('Payment verification failed: ' + (data.error || 'Unknown error'));
+            }
+          })
+          .catch(error => {
+            console.error('Payment verification error:', error);
+            alert('An error occurred during payment verification. Please try again.');
+          });
+        },
+        "prefill": {
+          "name": name,
+          "email": email
+        },
+        "theme": {
+          "color": "#f7ca44" // Updated to match site color
+        }
+      };
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        alert('Payment failed: ' + response.error.description);
+      });
+      rzp.open();
+    }
+
+    // Smooth scroll function
+    function smoothScroll(target) {
+      document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+    }
   </script>
 {% endblock %}

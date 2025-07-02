@@ -56,10 +56,10 @@
         var message = document.getElementById("message").value.trim();
 
         // Check if any field is empty
-        // if (!name || !email || !phone || !message) {
-        //     alert("All fields must be filled out");
-        //     return false;
-        // }
+        if (!name || !email || !phone || !message) {
+            alert("All fields must be filled out");
+            return false;
+        }
 
         // Email validation regex
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

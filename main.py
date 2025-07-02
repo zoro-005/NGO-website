@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, url_for, jsonify
+from flask import Flask, render_template, request, redirect, flash, url_for, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from datetime import datetime
@@ -9,7 +9,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.secret_key = 'supersecretkey'  # Ensure this is a secure key in production
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@localhost/ngo"
@@ -59,9 +59,9 @@ def home():
 def about():
     return render_template('about.html')
 
-@app.route('/how-it-works')
+@app.route('/join_us')
 def how_it_works():
-    return render_template('how-it-works.html')
+    return render_template('join_us.html')
 
 @app.route('/gallery')
 def gallery():
@@ -101,9 +101,10 @@ def join_us():
         entry = Volunteer(name=name, email=email, phone=phone, reason=reason, date=datetime.now())
         db.session.add(entry)
         db.session.commit()
-        flash('Thank you for signing up as a volunteer!')
-        return redirect(url_for('join_us'))
-    return render_template('how-it-works.html')
+        flash('Thank you for signing up as a volunteer!')  # Use flash for feedback
+        return redirect(url_for('join_us', success_message=True))  # Pass via query param
+    success_message = request.args.get('success_message')
+    return render_template('join_us.html', success_message=success_message)
 
 # Razorpay client
 razorpay_client = razorpay.Client(auth=(os.getenv("RAZORPAY_KEY_ID"), os.getenv("RAZORPAY_KEY_SECRET")))
@@ -177,14 +178,23 @@ def verify_payment():
         except Exception as e:
             print(f"Failed to send email: {str(e)}")
 
-        # Return success with redirect URL
+        # Set session to indicate successful payment
+        session['just_donated'] = True
         return jsonify({"status": "success", "redirect_url": url_for('donation_success', _external=True)})
     else:
         return jsonify({"status": "failed", "error": "Payment verification failed. Please try again."}), 400
 
 @app.route('/donation-success')
 def donation_success():
-    # Get the latest donation (assuming it's the one just processed)
+    # Check if user has just donated
+    if not session.get('just_donated'):
+        flash('You must complete a donation to view this page.', 'error')
+        return redirect(url_for('donate'))
+    
+    # Clear the session flag after access
+    session.pop('just_donated', None)
+
+    # Get the latest donation
     latest_donation = Donation.query.order_by(Donation.date.desc()).first()
     if latest_donation:
         return render_template('success.html', 
@@ -199,6 +209,14 @@ def donation_success():
                           email='your email', 
                           date=datetime.now().strftime('%b %d, %Y'), 
                           payment_id='XXX-XXX-XXX')
+
+@app.route('/fundraiser/<int:fundraiser_id>')
+def fundraiser(fundraiser_id):
+    return render_template('fundraiser.html', fundraiser_id=fundraiser_id)
+
+@app.route('/success/<int:story_id>')
+def success_story(story_id):
+    return render_template('success_story.html', story_id=story_id)
 
 if __name__ == '__main__':
     with app.app_context():

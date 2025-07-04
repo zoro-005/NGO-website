@@ -23,35 +23,84 @@
       <div class="row mb-5 justify-content-center">
         <div class="col-md-8 text-center">
           <h2 class="text-3xl font-bold">Make a Difference Today</h2>
-          <p class="lead mt-3">Your contribution fuels our mission. Choose an amount or set a custom donation to support our causes.</p>
+          <p class="lead mt-3">Your contribution fuels our mission. Choose your donation type to get started.</p>
         </div>
       </div>
 
-      <!-- Donation Form -->
-      <div class="row justify-content-center">
+      <!-- Donation Type Selection -->
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-6 text-center">
+          <div class="form-group">
+            <label class="form-label">Select Donation Type</label>
+            <div class="d-flex justify-content-center gap-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="donation-type" id="indian-donation" value="indian" required>
+                <label class="form-check-label" for="indian-donation">Indian Donation (Razorpay)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="donation-type" id="overseas-donation" value="overseas">
+                <label class="form-check-label" for="overseas-donation">Overseas Donation (PayPal)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indian Donation Form -->
+      <div class="row justify-content-center" id="indian-form" style="display: none;">
         <div class="col-md-6">
           <div class="card shadow-sm p-4">
-            <h3 class="text-center mb-4">Donate Now</h3>
-            <form id="donation-form" class="needs-validation" novalidate>
+            <h3 class="text-center mb-4">Indian Donation (Razorpay)</h3>
+            <form id="indian-donation-form" class="needs-validation" novalidate>
               <div class="form-group mb-3">
-                <label for="donor-name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="donor-name" placeholder="Enter your name" required>
+                <label for="indian-donor-name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="indian-donor-name" placeholder="Enter your name" required>
               </div>
               <div class="form-group mb-3">
-                <label for="donor-email" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="donor-email" placeholder="Enter your email" required>
+                <label for="indian-donor-email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="indian-donor-email" placeholder="Enter your email" required>
               </div>
               <div class="form-group mb-3">
-                <label class="form-label">Donation Amount</label>
+                <label class="form-label">Donation Amount (₹)</label>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                   <button type="button" class="btn btn-outline-primary donation-amount" data-amount="500">₹500</button>
                   <button type="button" class="btn btn-outline-primary donation-amount" data-amount="1000">₹1000</button>
                   <button type="button" class="btn btn-outline-primary donation-amount" data-amount="2000">₹2000</button>
                   <button type="button" class="btn btn-outline-primary donation-amount" data-amount="5000">₹5000</button>
                 </div>
-                <input type="number" class="form-control" id="custom-amount" placeholder="Or enter custom amount" min="1" required>
+                <input type="number" class="form-control" id="indian-custom-amount" placeholder="Or enter custom amount" min="1" required>
               </div>
-              <button type="button" class="btn btn-primary w-100 py-3" onclick="initiateDonation()">Proceed to Payment</button>
+              <button type="button" class="btn btn-primary w-100 py-3" onclick="initiateIndianDonation()">Proceed to Payment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overseas Donation Form -->
+      <div class="row justify-content-center" id="overseas-form" style="display: none;">
+        <div class="col-md-6">
+          <div class="card shadow-sm p-4">
+            <h3 class="text-center mb-4">Overseas Donation (PayPal)</h3>
+            <form id="overseas-donation-form" class="needs-validation" novalidate>
+              <div class="form-group mb-3">
+                <label for="overseas-donor-name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="overseas-donor-name" placeholder="Enter your name" required>
+              </div>
+              <div class="form-group mb-3">
+                <label for="overseas-donor-email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="overseas-donor-email" placeholder="Enter your email" required>
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label">Donation Amount ($)</label>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <button type="button" class="btn btn-outline-primary donation-amount" data-amount="5">$5</button>
+                  <button type="button" class="btn btn-outline-primary donation-amount" data-amount="10">$10</button>
+                  <button type="button" class="btn btn-outline-primary donation-amount" data-amount="25">$25</button>
+                  <button type="button" class="btn btn-outline-primary donation-amount" data-amount="50">$50</button>
+                </div>
+                <input type="number" class="form-control" id="overseas-custom-amount" placeholder="Or enter custom amount" min="1" step="0.01" required>
+              </div>
+              <button type="button" class="btn btn-primary w-100 py-3" id="overseas-proceed-btn">Proceed to Payment</button>
             </form>
           </div>
         </div>
@@ -67,7 +116,7 @@
           <div style="flex: 1 1 250px; max-width: 250px; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; text-align: center;">
             <h4 style="font-size: 1.125rem; font-weight: 600; margin: 0 0 0.5rem; white-space: normal;">{{ donor.name }}</h4>
             <span style="display: block; color: #6c757d; font-size: 0.875rem; margin-bottom: 0.5rem; white-space: normal;">Donated {{ donor.date.strftime('%b %d, %Y') }}</span>
-            <p style="font-size: 1rem; margin: 0; white-space: normal;">Donated <span style="color: #28a745; font-weight: bold;">₹{{ donor.amount|int }}</span></p>
+            <p style="font-size: 1rem; margin: 0; white-space: normal;">Donated <span style="color: #28a745; font-weight: bold;">₹{{ donor.amount|int if donor.payment_method == 'razorpay' else '$' + '{:.2f}'.format(donor.amount) }}</span></p>
           </div>
           {% else %}
           <div style="text-align: center; width: 100%;">
@@ -80,79 +129,47 @@
   </div>
 
   <!-- Loading Overlay -->
-  <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center;">
+  <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center; animation: fadeIn 1s ease-in-out;">
     <div style="color: #fff; font-size: 24px; text-align: center;">
-      <div class="spinner-border text-light" role="status">
+      <div class="spinner-border text-light pulse-animation" role="status" style="width: 3rem; height: 3rem;">
         <span class="visually-hidden">Loading...</span>
       </div>
       <p>Processing your donation...</p>
     </div>
   </div>
 
+  <!-- Failure Overlay -->
+  <div id="failure-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #fff; padding: 20px; border-radius: 8px; text-align: center; max-width: 400px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+      <h3 style="color: #dc3545; margin-bottom: 15px;">Payment Failed</h3>
+      <p id="failure-message" style="color: #333; margin-bottom: 20px;">We’re sorry, your payment could not be processed. Please try again.</p>
+      <p id="timer-message" style="color: #666; font-size: 14px; margin-bottom: 15px;"></p>
+      <button id="failure-redirect-btn" class="btn btn-primary" style="padding: 10px 20px;">Return to Donation</button>
+    </div>
+  </div>
+
   <!-- JavaScript -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID¤cy=USD"></script>
   <script>
-    document.querySelectorAll('.donation-amount').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.donation-amount').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        document.getElementById('custom-amount').value = button.dataset.amount;
+    document.querySelectorAll('input[name="donation-type"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const isIndian = radio.value === 'indian';
+        document.getElementById('indian-form').style.display = isIndian ? 'flex' : 'none';
+        document.getElementById('overseas-form').style.display = isIndian ? 'none' : 'flex';
       });
     });
 
-    // Form validation
-    (function () {
-      'use strict';
-      const forms = document.querySelectorAll('.needs-validation');
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-          event.preventDefault();
-          event.stopPropagation();
-          form.classList.add('was-validated');
-        }, false);
+    // Indian Donation Form
+    document.querySelectorAll('#indian-form .donation-amount').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('#indian-form .donation-amount').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById('indian-custom-amount').value = button.dataset.amount;
       });
-    })();
+    });
 
-    function initiateDonation() {
-      const form = document.getElementById('donation-form');
-      if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        return;
-      }
-
-      const donorName = document.getElementById('donor-name').value;
-      const donorEmail = document.getElementById('donor-email').value;
-      const amount = document.getElementById('custom-amount').value;
-
-      // Show loading overlay
-      document.getElementById('loading-overlay').style.display = 'flex';
-
-      fetch('/process-donation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          'donor-name': donorName,
-          'donor-email': donorEmail,
-          'custom-amount': amount
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.order_id) {
-          openRazorpayCheckout(data.order_id, amount, donorName, donorEmail);
-        } else {
-          document.getElementById('loading-overlay').style.display = 'none';
-          alert('Failed to create donation order: ' + (data.error || 'Unknown error'));
-        }
-      })
-      .catch(error => {
-        document.getElementById('loading-overlay').style.display = 'none';
-        console.error('Error:', error);
-        alert('An error occurred while processing your donation.');
-      });
-    }
-
-    function openRazorpayCheckout(orderId, amount, name, email) {
+    function openRazorpayCheckout(orderId, amount, name, email, loadingOverlay) {
       const options = {
         "key": "{{ key_id }}",
         "amount": amount * 100,
@@ -173,18 +190,23 @@
           })
           .then(res => res.json())
           .then(data => {
-            document.getElementById('loading-overlay').style.display = 'none';
+            loadingOverlay.style.display = 'none';
             if (data.status === 'success') {
               window.location.href = data.redirect_url;
             } else {
-              alert('Payment verification failed: ' + (data.error || 'Unknown error'));
+              showFailureOverlay(data.error || 'Payment verification failed');
             }
           })
           .catch(error => {
-            document.getElementById('loading-overlay').style.display = 'none';
-            console.error('Payment verification error:', error);
-            alert('An error occurred during payment verification. Please try again.');
+            loadingOverlay.style.display = 'none';
+            showFailureOverlay('An error occurred during payment verification: ' + error.message);
           });
+        },
+        "modal": {
+          "ondismiss": function () {
+            loadingOverlay.style.display = 'none';
+            showFailureOverlay('Payment was cancelled.');
+          }
         },
         "prefill": {
           "name": name,
@@ -196,10 +218,159 @@
       };
       const rzp = new Razorpay(options);
       rzp.on('payment.failed', function (response) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        alert('Payment failed: ' + response.error.description);
+        loadingOverlay.style.display = 'none';
+        showFailureOverlay(response.error.description);
       });
       rzp.open();
+    }
+
+    // Overseas Donation Form
+    document.querySelectorAll('#overseas-form .donation-amount').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('#overseas-form .donation-amount').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById('overseas-custom-amount').value = button.dataset.amount;
+      });
+    });
+
+    // Custom function to trigger PayPal flow
+    function initiateOverseasDonation() {
+      const form = document.getElementById('overseas-donation-form');
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+
+      const loadingOverlay = document.getElementById('loading-overlay');
+      loadingOverlay.style.display = 'flex';
+
+      // Manually trigger the PayPal button's createOrder flow
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          const donorName = document.getElementById('overseas-donor-name').value;
+          const donorEmail = document.getElementById('overseas-donor-email').value;
+          const amount = parseFloat(document.getElementById('overseas-custom-amount').value) || 0;
+
+          if (amount <= 0) {
+            alert('Please enter a valid donation amount.');
+            loadingOverlay.style.display = 'none';
+            return;
+          }
+
+          return fetch('/create-paypal-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: amount,
+              currency: 'USD',
+              donorName: donorName,
+              donorEmail: donorEmail
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.orderID) {
+              return data.orderID;
+            } else {
+              throw new Error(data.error || 'Failed to create PayPal order');
+            }
+          });
+        },
+        onApprove: function(data, actions) {
+          return fetch('/capture-paypal-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderID: data.orderID
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            loadingOverlay.style.display = 'none';
+            if (data.status === 'success') {
+              window.location.href = data.redirect_url;
+            } else {
+              showFailureOverlay(data.error || 'Payment verification failed');
+            }
+          });
+        },
+        onCancel: function(data) {
+          loadingOverlay.style.display = 'none';
+          showFailureOverlay('Payment was cancelled by the donor.');
+        },
+        onError: function(err) {
+          loadingOverlay.style.display = 'none';
+          showFailureOverlay('An error occurred during payment: ' + err.message);
+        }
+      }).render('#paypal-button-container');
+    }
+
+    // Attach event listener to the overseas proceed button
+    document.getElementById('overseas-proceed-btn').addEventListener('click', initiateOverseasDonation);
+
+    // Initiate Indian donation
+    function initiateIndianDonation() {
+      const form = document.getElementById('indian-donation-form');
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+
+      const donorName = document.getElementById('indian-donor-name').value;
+      const donorEmail = document.getElementById('indian-donor-email').value;
+      const amount = parseFloat(document.getElementById('indian-custom-amount').value) || 0;
+      const loadingOverlay = document.getElementById('loading-overlay');
+      loadingOverlay.style.display = 'flex';
+
+      fetch('/process-donation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'donor-name': donorName,
+          'donor-email': donorEmail,
+          'custom-amount': amount
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.order_id) {
+          openRazorpayCheckout(data.order_id, amount, donorName, donorEmail, loadingOverlay);
+        } else {
+          loadingOverlay.style.display = 'none';
+          showFailureOverlay(data.error || 'Failed to create Razorpay order');
+        }
+      })
+      .catch(error => {
+        loadingOverlay.style.display = 'none';
+        showFailureOverlay('An error occurred while processing your donation: ' + error.message);
+      });
+    }
+
+    function showFailureOverlay(errorMessage = 'Unknown error') {
+      const failureOverlay = document.getElementById('failure-overlay');
+      const failureMessage = document.getElementById('failure-message');
+      const timerMessage = document.getElementById('timer-message');
+      failureMessage.textContent = `We’re sorry, your payment could not be processed. ${errorMessage ? `Reason: ${errorMessage}.` : ''} Please try again.`;
+      failureOverlay.style.display = 'flex';
+
+      let timeLeft = 7;
+      timerMessage.textContent = `You will return to the donation page in ${timeLeft} seconds`;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        timerMessage.textContent = `You will return to the donation page in ${timeLeft} seconds`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          failureOverlay.style.display = 'none';
+          window.location.href = '/donate';
+        }
+      }, 1000);
+
+      document.getElementById('failure-redirect-btn').onclick = () => {
+        clearInterval(timer);
+        failureOverlay.style.display = 'none';
+        window.location.href = '/donate';
+      };
     }
 
     // Smooth scroll function
@@ -207,4 +378,27 @@
       document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
     }
   </script>
+
+  <!-- CSS for Animations -->
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse-animation {
+      animation: pulse 1.5s infinite;
+    }
+
+    #indian-form, #overseas-form {
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
 {% endblock %}

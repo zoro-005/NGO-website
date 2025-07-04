@@ -25,14 +25,14 @@
           <div class="block-48">
               <span class="block-48-text-1">Cared for Over</span>
               <br><br>
-              <div class="block-48-counter ftco-number" data-number="1281">0</div>
+              <div class="block-48-counter ftco-number" data-number="3249">0</div>
               <br>
               <span class="block-48-text-1 mb-4 d-block">Animals in Meerut and Beyond</span>
             </div>
         </div>
         <div class="col-md-6 welcome-text">
           <h2 class="display-4 mb-3">Who Are We?</h2>
-          <p class="lead">Right here in Meerut, and extending our care across nearby regions, we at Sankalap Ek Sewa are dedicated to the welfare of street dogs, stray cows, and other animals in need. Our compassionate efforts ensure they receive medical treatment, shelter, and love, transforming their lives one step at a time.</p>
+          <p class="lead">Right here in Meerut, and extending our care across nearby regions, we at Sankalap Ek Sewa Foundation are dedicated to the welfare of street dogs, stray cows, and other animals in need. Our compassionate efforts ensure they receive medical treatment, shelter, and love, transforming their lives one step at a time.</p>
           <p class="mb-4">A small team of veterinarians and volunteers works tirelessly, supported by the local community, to provide the necessary care and resources for these voiceless creatures.</p>
         </div>
       </div>
@@ -44,62 +44,31 @@
       <div class="row mb-3 justify-content-center">
         <div class="col-md-8 text-center">
           <h2>Latest Fundraisers</h2>
-          <p class="lead">Help save street animals! Our latest fundraisers focus on emergency veterinary care, safe shelters, and nourishment for stray dogs, cows, and more. <br> Join us today!</p>
+          <p class="lead">Help save street animals! Our latest fundraisers focus on emergency veterinary care, safe shelters, and nourishment for stray dogs, cows, and more.</p>
         </div>
       </div>
     </div>
-
+  
     <div class="container-fluid">
       <div class="col-md-12 block-11">
         <div class="nonloop-block-11 owl-carousel">
-          <div class="card fundraise-item">
-            <a href="/fundraiser/1"><img class="card-img-top" src="images/img_1.jpg" alt="Image placeholder"></a>
-            <div class="card-body">
-              <h3 class="card-title"><a href="/fundraiser/1">Random Fundraiser 1</a></h3>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-              <p><a href="/donate" class="link-underline">Donate Now</a></p>
+          {% for fundraiser in fundraisers %}
+            <div class="card fundraise-item">
+              <a href="/fundraiser/{{ fundraiser.id }}"><img class="card-img-top" src="{{ fundraiser.image_url or 'images/img_' ~ loop.index ~ '.jpg' }}" alt="Fundraiser Image"></a>
+              <div class="card-body">
+                <h3 class="card-title"><a href="/fundraiser/{{ fundraiser.id }}">{{ fundraiser.name }}</a></h3>
+                <p class="card-text">Amount: ₹{{ fundraiser.amount|default('N/A') }}</p>
+                <p class="card-text">{{ fundraiser.description|truncate(100, true) }}</p>
+                <p><a href="/donate" class="link-underline">Donate Now</a></p>
+              </div>
             </div>
-          </div>
-          <div class="card fundraise-item">
-            <a href="/fundraiser/2"><img class="card-img-top" src="images/img_7.jpg" alt="Image placeholder"></a>
-            <div class="card-body">
-              <h3 class="card-title"><a href="/fundraiser/2">Random Fundraiser 2</a></h3>
-              <p class="card-text">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              <p><a href="/donate" class="link-underline">Donate Now</a></p>
+          {% else %}
+            <div class="card fundraise-item">
+              <div class="card-body">
+                <p class="card-text">No fundraisers available yet. Check back soon for new opportunities to support our cause!</p>
+              </div>
             </div>
-          </div>
-          <div class="card fundraise-item">
-            <a href="/fundraiser/3"><img class="card-img-top" src="images/img_3.jpg" alt="Image placeholder"></a>
-            <div class="card-body">
-              <h3 class="card-title"><a href="/fundraiser/3">Random Fundraiser 3</a></h3>
-              <p class="card-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-              <p><a href="/donate" class="link-underline">Donate Now</a></p>
-            </div>
-          </div>
-          <div class="card fundraise-item">
-            <a href="/fundraiser/4"><img class="card-img-top" src="images/img_4.jpg" alt="Image placeholder"></a>
-            <div class="card-body">
-              <h3 class="card-title"><a href="/fundraiser/4">Random Fundraiser 4</a></h3>
-              <p class="card-text">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-              <p><a href="/donate" class="link-underline">Donate Now</a></p>
-            </div>
-          </div>
-          <div class="card fundraise-item">
-            <a href="/fundraiser/5"><img class="card-img-top" src="images/img_6.jpg" alt="Image placeholder"></a>
-            <div class="card-body">
-              <h3 class="card-title"><a href="/fundraiser/5">Random Fundraiser 5</a></h3>
-              <p class="card-text">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.</p>
-              <p><a href="/donate" class="link-underline">Donate Now</a></p>
-            </div>
-          </div>
-          <div class="card fundraise-item">
-            <a href="/fundraiser/6"><img class="card-img-top" src="images/img_3.jpg" alt="Image placeholder"></a>
-            <div class="card-body">
-              <h3 class="card-title"><a href="/fundraiser/6">Random Fundraiser 6</a></h3>
-              <p class="card-text">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque.</p>
-              <p><a href="/donate" class="link-underline">Donate Now</a></p>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -115,8 +84,8 @@
           <span class="featured-text d-block mb-3">Success Stories</span>
           <h2>Random Success Story 1</h2>
           <p class="mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-          <span class="fund-raised d-block mb-5">Random achievement text here</span>
           <p><a href="/success/1" class="btn btn-success btn-hover-white py-3 px-5">Read The Full Story</a></p>
+          <p class="mt-3"><a href="/success/all" class="link-underline-ss" style="color: #000; text-decoration: underline; transition: all 0.3s ease;">More Success Stories</a></p>
         </div>
       </div>
     </div>
@@ -126,40 +95,119 @@
     <div class="container">
       <div class="row mb-5">
         <div class="col-md-12">
-          <h2 style="text-align: center;">Instagram Posts</h2>
+          <h2 style="text-align: center;">Latest Instagram Reels</h2>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0">
-          <div class="post-entry">
-            <a href="#" class="mb-3 img-wrap">
-              <img src="https://via.placeholder.com/300x200" alt="Instagram Post 1" class="img-fluid">
-            </a>
-            <h3><a href="#">Rescue Update</a></h3>
-            <p><a href="https://instagram.com/sankalapsewa" class="link-underline">View on Instagram</a></p>
+        <div class="col-12">
+          <div class="juicer-feed-container" style="position: relative;">
+            <div class="juicer-feed" data-feed-id="sankalapeksewa" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+              <!-- Juicer.io will inject the Reels here -->
+            </div>
+            <button id="expand-btn" class="btn btn-primary mt-3" style="display: none;">Expand to See More</button>
           </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0">
-          <div class="post-entry">
-            <a href="#" class="mb-3 img-wrap">
-              <img src="https://via.placeholder.com/300x200" alt="Instagram Post 2" class="img-fluid">
-            </a>
-            <h3><a href="#">Cow Care Day</a></h3>
-            <p><a href="https://instagram.com/sankalapsewa" class="link-underline">View on Instagram</a></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0">
-          <div class="post-entry">
-            <a href="#" class="mb-3 img-wrap">
-              <img src="https://via.placeholder.com/300x200" alt="Instagram Post 3" class="img-fluid">
-            </a>
-            <h3><a href="#">Dog Adoption Event</a></h3>
-            <p><a href="https://instagram.com/sankalapsewa" class="link-underline">View on Instagram</a></p>
-          </div>
+          <script type="text/javascript" src="https://www.juicer.io/embed/sankalapeksewa/embed-code.js?per=6&theme=light" async defer></script>
         </div>
       </div>
     </div>
   </div> <!-- .section -->
 
-  {% endblock %}
+  <!-- CSS for Animations and Styling -->
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse-animation {
+      animation: pulse 1.5s infinite;
+    }
+
+    .juicer-feed .item {
+      margin: 5px;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .juicer-feed .item:hover {
+      transform: scale(1.05); /* Slight hover effect for elegance */
+    }
+
+    .juicer-feed-container .juicer-feed .item {
+      display: none; /* Hide all initially */
+    }
+
+    .juicer-feed-container .juicer-feed .item.visible {
+      display: block; /* Show visible items */
+    }
+
+    /* Limit to 1 row initially */
+    .juicer-feed-container .juicer-feed {
+      overflow: hidden;
+    }
+
+    .juicer-feed-container .juicer-feed.row-1 .item {
+      display: block; /* Show only 1 row initially */
+    }
+
+    #expand-btn {
+      position: relative;
+      z-index: 1001;
+    }
+  </style>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const feed = document.querySelector('.juicer-feed');
+      const expandBtn = document.getElementById('expand-btn');
+      let visibleItems = 0;
+      let expandCount = 0;
+
+      // Wait for Juicer to load the feed
+      const checkFeed = setInterval(() => {
+        if (feed.children.length > 0) {
+          clearInterval(checkFeed);
+          const items = Array.from(feed.children);
+          visibleItems = Math.min(4, items.length); // Show 1 row (4 items initially)
+          feed.classList.add('row-1'); // Apply row-1 class for initial display
+          items.slice(0, visibleItems).forEach(item => item.classList.add('visible'));
+          expandBtn.style.display = items.length > visibleItems ? 'block' : 'none';
+        }
+      }, 500);
+
+      expandBtn.addEventListener('click', () => {
+        expandCount++;
+        const items = Array.from(feed.children);
+        let newVisibleItems;
+
+        if (expandCount === 1) {
+          newVisibleItems = Math.min(12, items.length); // Show 3 rows (12 items max with 6 fetched)
+        } else {
+          newVisibleItems = items.length; // Show all on second click
+        }
+
+        items.slice(visibleItems, newVisibleItems).forEach(item => item.classList.add('visible'));
+        visibleItems = newVisibleItems;
+
+        if (visibleItems >= items.length) {
+          expandBtn.style.display = 'none';
+        }
+      });
+    });
+
+    // Smooth scroll function
+    function smoothScroll(target) {
+      document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+{% endblock %}

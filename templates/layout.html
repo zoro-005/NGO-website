@@ -50,29 +50,56 @@
     </div>
   </nav>
   <!-- END nav -->
+
   {% block body %} {% endblock %}
+  
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
         <ul class="contact-info">
-          <li><a href="https://www.google.com/maps/place/Sankalap+Ek+Sewa+Foundation+(SESF)/@29.037994,77.717945,1450m/data=!3m1!1e3!4m15!1m8!3m7!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!2sSankalap+Ek+Sewa+Foundation+(SESF)!8m2!3d29.0379939!4d77.7179452!10e1!16s%2Fg%2F11vz3sj45s!3m5!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!8m2!3d29.0379939!4d77.7179452!16s%2Fg%2F11vz3sj45s?hl=en&entry=ttu&g_ep=EgoyMDI1MDIyNS4wIKXMDSoASAFQAw%3D%3D" target="_blank"><span class="icon icon-map-marker"></span><span class="text" style=" padding-top: 5px;"> Shop No 2 Green City Colony, Krishna Nagar, Sofipur, Meerut, Uttar Pradesh, India</span></a></li>
+          <li><a href="https://www.google.com/maps/place/Sankalap+Ek+Sewa+Foundation+(SESF)/@29.037994,77.717945,1450m/data=!3m1!1e3!4m15!1m8!3m7!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!2sSankalap+Ek+Sewa+Foundation+(SESF)!8m2!3d29.0379939!4d77.7179452!10e1!16s%2Fg%2F11vz3sj45s!3m5!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!8m2!3d29.0379939!4d77.7179452!16s%2Fg%2F11vz3sj45s?hl=en&entry=ttu&g_ep=EgoyMDI1MDIyNS4wIKXMDSoASAFQAw%3D%3D" target="_blank"><span class="icon icon-map-marker"></span><span class="text" style="padding-top: 5px;"> Shop No 2 Green City Colony, Krishna Nagar, Sofipur, Meerut, Uttar Pradesh, India</span></a></li>
           <li><a href="tel:+919258984359"><span class="icon icon-phone"></span><span class="text"> 92589-84359</span></a></li>
-          <li><a href="mailto:sankalpeksewa@gmail.com"><span class="icon icon-envelope"></span><span class="text" style=" padding-top: 5px;"> sankalpeksewa@gmail.com</span></a></li>
+          <li><a href="mailto:sankalpeksewa@gmail.com"><span class="icon icon-envelope"></span><span class="text" style="padding-top: 5px;"> sankalpeksewa@gmail.com</span></a></li>
         </ul>
         <ul class="social-icons" style="list-style: none; display: flex; justify-content: center; gap: 20px; font-size: x-large; padding-top: 10px;">
           <li><a href="https://www.facebook.com/people/Sankalap-Ek-Sewa-Foundation/61559734657339/" target="_blank"><span class="icon icon-facebook"></span></a></li>
           <li><a href="https://www.instagram.com/sesf.official/" target="_blank"><span class="icon icon-instagram"></span></a></li>
           <li><a href="https://www.linkedin.com/in/sankalp-ek-sewa-3425a6305/?originalSubdomain=in" target="_blank"><span class="icon icon-linkedin"></span></a></li>
+          <li><a href="https://www.youtube.com/@SankalapEkSewa" target="_blank"><span class="icon icon-youtube"></span></a></li>
         </ul>
       </div>
     </div>
     <div class="row pt-5">
       <div class="col-md-12 text-center">
-        <p style = "opacity: 0.01;">
-          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-          Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ion-ios-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
-          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-          </p>
+        <p style="opacity: 0.01;">
+          Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ion-ios-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+        </p>
+        <small>
+          <a href="#" id="addFundraiserLink" style="color: transparent; text-decoration: none;" data-toggle="modal" data-target="#clientModal">Admin</a>
+        </small>
+      </div>
+    </div>
+  
+    <!-- Client Modal (for Add Fundraiser) -->
+    <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="clientModalLabel">Add Fundraiser</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="{{ url_for('authenticate_client') }}">
+              <div class="form-group">
+                <label for="client_key">Client Key</label>
+                <input type="password" class="form-control" id="client_key" name="client_key" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
@@ -100,13 +127,12 @@
   
   <script src="{{url_for('static',filename='js/aos.js')}}"></script>
   <script src="{{url_for('static',filename='js/jquery.animateNumber.min.js')}}"></script>
-  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNxnt81hFpknYrYFjqbSMh5Mr-CI2rG_E&sensor=false"></script> -->
-  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNxnt81hFpknYrYFjqbSMh5Mr-CI2rG_E&callback=init" async defer></script> -->
-  
-  
 
   <script src="{{url_for('static',filename='js/google-map.js')}}"></script>
   <script src="{{url_for('static',filename='js/main.js')}}"></script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
   </body>
   <style>

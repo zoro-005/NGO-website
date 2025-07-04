@@ -2003,3 +2003,7 @@ textarea.form-control {
   border-radius: 50%;
   margin-right: 10px;
 }
+.link-underline-ss:hover {
+  color: #218838; /* Darker green */
+  text-decoration: none; /* Optional: removes underline on hover for contrast */
+}

@@ -4,7 +4,7 @@
   <div class="hero-section" style="background: linear-gradient(to bottom, #f7ca44, #ffffff); padding: 120px 0 60px; text-align: center; color: #000; position: relative; overflow: hidden;">
     <div class="container">
       <h1 class="display-4 font-weight-bold animate__animated animate__fadeIn">Thank You, {{ name|default('Donor') }}!</h1>
-      <p class="lead animate__animated animate__fadeIn" style="animation-delay: 0.5s; color: #333;">Your generous donation of ₹{{ amount|default('XXX') }} has been successfully processed.</p>
+      <p class="lead animate__animated animate__fadeIn" style="animation-delay: 0.5s; color: #333;">Your generous donation of {{ currency_symbol }}{{ amount|default('XXX') }} has been successfully processed.</p>
     </div>
     <div style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; background: rgba(247, 202, 68, 0.2); border-radius: 50%; opacity: 0.7;"></div>
   </div>
@@ -18,7 +18,7 @@
           <p class="card-text" style="color: #666;">Your contribution will help us provide clean water, education, and shelter to those in need. A receipt has been sent to {{ email|default('your email') }}.</p>
           <ul class="list-group list-group-flush">
             <li class="list-group-item" style="color: #333;"><strong>Name:</strong> {{ name|default('Anonymous') }}</li>
-            <li class="list-group-item" style="color: #333;"><strong>Amount:</strong> ₹{{ amount|default('XXX') }}</li>
+            <li class="list-group-item" style="color: #333;"><strong>Amount:</strong> {{ currency_symbol }}{{ amount|default('XXX') }}</li>
             <li class="list-group-item" style="color: #333;"><strong>Date:</strong> {{ date|default('N/A') }}</li>
             <li class="list-group-item" style="color: #333;"><strong>Payment ID:</strong> {{ payment_id|default('XXX-XXX-XXX') }}</li>
           </ul>

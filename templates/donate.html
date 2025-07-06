@@ -100,7 +100,8 @@
                 </div>
                 <input type="number" class="form-control" id="overseas-custom-amount" placeholder="Or enter custom amount" min="1" step="0.01" required>
               </div>
-              <button type="button" class="btn btn-primary w-100 py-3" id="overseas-proceed-btn">Proceed to Payment</button>
+              <!-- PayPal Smart Button Container -->
+              <div id="paypal-button-container"></div>
             </form>
           </div>
         </div>
@@ -150,7 +151,7 @@
 
   <!-- JavaScript -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID¤cy=USD"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
   <script>
     document.querySelectorAll('input[name="donation-type"]').forEach(radio => {
       radio.addEventListener('change', () => {
@@ -233,80 +234,72 @@
       });
     });
 
-    // Custom function to trigger PayPal flow
-    function initiateOverseasDonation() {
-      const form = document.getElementById('overseas-donation-form');
-      if (!form.checkValidity()) {
-        form.classList.add('was-validated');
-        return;
-      }
-
-      const loadingOverlay = document.getElementById('loading-overlay');
-      loadingOverlay.style.display = 'flex';
-
-      // Manually trigger the PayPal button's createOrder flow
-      paypal.Buttons({
-        createOrder: function(data, actions) {
-          const donorName = document.getElementById('overseas-donor-name').value;
-          const donorEmail = document.getElementById('overseas-donor-email').value;
-          const amount = parseFloat(document.getElementById('overseas-custom-amount').value) || 0;
-
-          if (amount <= 0) {
-            alert('Please enter a valid donation amount.');
-            loadingOverlay.style.display = 'none';
-            return;
-          }
-
-          return fetch('/create-paypal-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              amount: amount,
-              currency: 'USD',
-              donorName: donorName,
-              donorEmail: donorEmail
-            })
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.orderID) {
-              return data.orderID;
-            } else {
-              throw new Error(data.error || 'Failed to create PayPal order');
-            }
-          });
-        },
-        onApprove: function(data, actions) {
-          return fetch('/capture-paypal-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              orderID: data.orderID
-            })
-          })
-          .then(response => response.json())
-          .then(data => {
-            loadingOverlay.style.display = 'none';
-            if (data.status === 'success') {
-              window.location.href = data.redirect_url;
-            } else {
-              showFailureOverlay(data.error || 'Payment verification failed');
-            }
-          });
-        },
-        onCancel: function(data) {
-          loadingOverlay.style.display = 'none';
-          showFailureOverlay('Payment was cancelled by the donor.');
-        },
-        onError: function(err) {
-          loadingOverlay.style.display = 'none';
-          showFailureOverlay('An error occurred during payment: ' + err.message);
+    // PayPal Button Initialization
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        const donorName = document.getElementById('overseas-donor-name').value;
+        const donorEmail = document.getElementById('overseas-donor-email').value;
+        const amount = parseFloat(document.getElementById('overseas-custom-amount').value) || 0;
+  
+        if (!donorName || !donorEmail || amount <= 0) {
+          alert('Please fill in all fields with a valid amount.');
+          return;
         }
-      }).render('#paypal-button-container');
-    }
-
-    // Attach event listener to the overseas proceed button
-    document.getElementById('overseas-proceed-btn').addEventListener('click', initiateOverseasDonation);
+  
+        return fetch('/create-paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            'donor-name': donorName,
+            'donor-email': donorEmail,
+            'amount': amount
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.orderID) {
+            return data.orderID;
+          } else {
+            throw new Error(data.error || 'Failed to create PayPal order');
+          }
+        });
+      },
+      onApprove: function(data, actions) {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.style.display = 'flex';
+  
+        return fetch('/capture-paypal-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            'orderID': data.orderID
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          loadingOverlay.style.display = 'none';
+          if (data.status === 'success') {
+            window.location.href = data.redirect_url;
+          } else {
+            showFailureOverlay(data.error || 'Payment verification failed');
+          }
+        })
+        .catch(error => {
+          loadingOverlay.style.display = 'none';
+          showFailureOverlay('An error occurred during payment: ' + error.message);
+        });
+      },
+      onCancel: function(data) {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.style.display = 'none';
+        showFailureOverlay('Payment was cancelled by the donor.');
+      },
+      onError: function(err) {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.style.display = 'none';
+        showFailureOverlay('An error occurred during payment: ' + err.message);
+      }
+    }).render('#paypal-button-container');
 
     // Initiate Indian donation
     function initiateIndianDonation() {

@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style type="text/css">
-    body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; color: #333; background-color: #f4f4f4; }
-    .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .header { background-color: #007bff; color: #fff; padding: 20px; text-align: center; }
-    .header h1 { margin: 0; font-size: 1.5em; font-weight: bold; }
-    .content { padding: 20px; }
-    .receipt-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    .receipt-table th, .receipt-table td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
-    .receipt-table th { background-color: #f8f9fa; font-weight: 600; }
-    .amount { color: #28a745; font-weight: bold; }
-    .footer { text-align: center; padding: 20px; color: #6c757d; font-size: 0.9em; border-top: 1px solid #ddd; }
-    @media only screen and (max-width: 600px) {
-      .container { width: 100% !important; margin: 0; border-radius: 0; }
-      .content { padding: 10px; }
-    }
-  </style>
+    <style type="text/css">
+        body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; color: #333; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header { background-color: #007bff; color: #fff; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 1.5em; font-weight: bold; }
+        .content { padding: 20px; }
+        .receipt-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .receipt-table th, .receipt-table td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+        .receipt-table th { background-color: #f8f9fa; font-weight: 600; }
+        .amount { color: #28a745; font-weight: bold; }
+        .footer { text-align: center; padding: 20px; color: #6c757d; font-size: 0.9em; border-top: 1px solid #ddd; }
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; margin: 0; border-radius: 0; }
+            .content { padding: 10px; }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" style="max-width: 150px; margin-bottom: 10px;">
-      <h1>Sankalap Ek Sewa Foundation</h1>
+    <div class="container">
+        <div class="header">
+            <img src="/static/images/logo.png" alt="Logo" style="max-width: 150px; margin-bottom: 10px;">
+            <h1>Sankalap Ek Sewa Foundation</h1>
+        </div>
+        <div class="content">
+            <p style="margin: 0 0 15px;">Dear {{ name }},</p>
+            <p style="margin: 0 0 15px;">Thank you for your generous donation! Your support helps us provide clean water, education, and shelter to those in need.</p>
+            <h2 style="font-size: 1.2em; font-weight: bold; margin: 0 0 15px;">Donation Receipt</h2>
+            <table class="receipt-table">
+                <tr>
+                    <th>Name</th>
+                    <td>{{ name }}</td>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <td class="amount">{{ currency_symbol }}{{ amount }}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ date }}</td>
+                </tr>
+                <tr>
+                    <th>Payment ID</th>
+                    <td>{{ payment_id }}</td>
+                </tr>
+            </table>
+            <p style="margin: 15px 0;">We deeply appreciate your contribution and will ensure it makes a meaningful impact. A tax receipt will be provided if applicable.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated email. Please do not reply directly to this message.</p>
+            <p>Contact us at <a href="mailto:sankalpeksewa@gmail.com" style="color: #007bff; text-decoration: none;">sankalpeksewa@gmail.com</a> or visit <a href="https://sesf.org" style="color: #007bff; text-decoration: none;">sesf.org</a> for more information.</p>
+        </div>
     </div>
-    <div class="content">
-      <p style="margin: 0 0 15px;">Dear {{ name }},</p>
-      <p style="margin: 0 0 15px;">Thank you for your generous donation! Your support helps us provide clean water, education, and shelter to those in need.</p>
-      <h2 style="font-size: 1.2em; font-weight: bold; margin: 0 0 15px;">Donation Receipt</h2>
-      <table class="receipt-table">
-        <tr>
-          <th>Name</th>
-          <td>{{ name }}</td>
-        </tr>
-        <tr>
-          <th>Amount</th>
-          <td class="amount">₹{{ amount|int }}</td>
-        </tr>
-        <tr>
-          <th>Date</th>
-          <td>{{ date }}</td>
-        </tr>
-        <tr>
-          <th>Payment ID</th>
-          <td>{{ payment_id }}</td>
-        </tr>
-      </table>
-      <p style="margin: 15px 0;">We deeply appreciate your contribution and will ensure it makes a meaningful impact. A tax receipt will be provided if applicable.</p>
-    </div>
-    <div class="footer">
-      <p>This is an automated email. Please do not reply directly to this message.</p>
-      <p>Contact us at <a href="mailto:sankalpeksewa@gmail.com" style="color: #007bff; text-decoration: none;">sankalpeksewa@gmail.com</a> or visit <a href="https://sesf.org" style="color: #007bff; text-decoration: none;">sesf.org</a> for more information.</p>
-    </div>
-  </div>
 </body>
 </html>

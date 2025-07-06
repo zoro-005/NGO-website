@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="container my-5">
+  <div class="container my-5 pt-5"> <!-- Increased top padding with pt-5 -->
     <div class="row justify-content-center">
       <div class="col-md-8 text-center">
-        <h2>Submit a Fundraiser</h2>
+        <h2 class="mb-4">Submit a Fundraiser</h2> <!-- Added margin below heading -->
 
         <!-- Modal for Client Key -->
         <div class="modal fade" id="clientKeyModal" tabindex="-1" role="dialog" {% if show_modal %}style="display: block;"{% endif %} aria-labelledby="clientKeyModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
+          <div class="modal-dialog modal-dialog-centered"> <!-- Centered modal vertically -->
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="clientKeyModalLabel">Enter Client Key</h5>
@@ -21,7 +21,7 @@
                     <label for="client_key">Client Key</label>
                     <input type="password" class="form-control" id="client_key" name="client_key" required>
                   </div>
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary btn-block">Submit</button> <!-- Full-width button -->
                 </form>
               </div>
             </div>
@@ -30,25 +30,27 @@
 
         <!-- Fundraiser Form -->
         <div id="fundraiserForm" {% if show_modal %}style="display: none;"{% endif %}>
-          <form method="POST" action="{{ url_for('submit_fundraiser') }}" enctype="multipart/form-data">
-            <div class="form-group">
-              <label for="fundraiser_name">Fundraiser Name</label>
-              <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required>
-            </div>
-            <div class="form-group">
-              <label for="amount">Donation Amount (₹)</label>
-              <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
-            </div>
-            <div class="form-group">
-              <label for="description">Fundraiser Description</label>
-              <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-              <label for="image">Upload Image (Required)</label>
-              <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
-            </div>
-            <button type="submit" class="btn btn-primary py-2 px-4">Submit Fundraiser</button>
-          </form>
+          <div class="card shadow-sm p-4"> <!-- Card for better elevation and padding -->
+            <form method="POST" action="{{ url_for('submit_fundraiser') }}" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="fundraiser_name">Fundraiser Name</label>
+                <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required>
+              </div>
+              <div class="form-group">
+                <label for="amount">Donation Amount (₹)</label>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+              </div>
+              <div class="form-group">
+                <label for="description">Fundraiser Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="image">Upload Image (Required)</label>
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+              </div>
+              <button type="submit" class="btn btn-primary py-2 px-4 mt-3">Submit Fundraiser</button> <!-- Added margin-top -->
+            </form>
+          </div>
         </div>
 
         <script>

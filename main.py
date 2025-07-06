@@ -3,15 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from datetime import datetime
 from dotenv import load_dotenv
-import razorpay
-import paypalrestsdk
-import os
-import requests
 from werkzeug.utils import secure_filename
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
+import razorpay
+import os
+import requests
+import logging
 
 load_dotenv()
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -124,7 +126,7 @@ def contact():
 @app.route('/donate')
 def donate():
     donors = Donation.query.order_by(Donation.date.desc()).limit(4).all()
-    return render_template('donate.html', donors=donors, key_id=os.getenv("RAZORPAY_KEY_ID"))
+    return render_template('donate.html', donors=donors, key_id=os.getenv("RAZORPAY_KEY_ID"), paypal_client_id=os.getenv("PAYPAL_CLIENT_ID"))
 
 @app.route('/join_us', methods=["GET", "POST"])
 def join_us():
@@ -145,11 +147,16 @@ def join_us():
 razorpay_client = razorpay.Client(auth=(os.getenv("RAZORPAY_KEY_ID"), os.getenv("RAZORPAY_KEY_SECRET")))
 
 # PayPal client
-paypalrestsdk.configure({
-    "mode": "sandbox",  # Use "sandbox" for testing and "live" when live
-    "client_id": os.getenv("PAYPAL_CLIENT_ID"),
-    "client_secret": os.getenv("PAYPAL_CLIENT_SECRET")
-})
+def get_access_token():
+    auth = (os.getenv("PAYPAL_CLIENT_ID"), os.getenv("PAYPAL_CLIENT_SECRET"))
+    response = requests.post(
+        'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+        auth=auth,
+        data={'grant_type': 'client_credentials'},
+        headers={'Accept': 'application/json'}
+    )
+    response.raise_for_status()
+    return response.json()['access_token']
 
 @app.route('/process-donation', methods=['POST'])
 def process_donation():
@@ -224,43 +231,122 @@ def verify_payment():
         return jsonify({"status": "success", "redirect_url": url_for('donation_success', _external=True)})
     else:
         return jsonify({"status": "failed", "error": "Payment verification failed. Please try again."}), 400
+    
+class PayPalClient:
+    def __init__(self):
+        self.base_url = 'https://api-m.sandbox.paypal.com'
+        self.access_token = get_access_token()
+
+    def create_order(self, amount, donor_name, donor_email):
+        url = f'{self.base_url}/v2/checkout/orders'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}'
+        }
+        payload = {
+            "intent": "CAPTURE",
+            "purchase_units": [{
+                "amount": {
+                    "currency_code": "USD",  # Changed from INR to USD
+                    "value": f"{amount:.2f}",
+                    "breakdown": {
+                        "item_total": {
+                            "currency_code": "USD",
+                            "value": f"{amount:.2f}"
+                        }
+                    }
+                },
+                "items": [{
+                    "name": f"Donation by {donor_name}",
+                    "unit_amount": {
+                        "currency_code": "USD",
+                        "value": f"{amount:.2f}"
+                    },
+                    "quantity": "1",
+                    "description": f"Donation from {donor_email}"
+                }],
+                "description": f"Donation to Your NGO by {donor_name}",
+                "custom_id": donor_name,
+                "soft_descriptor": "NGO DONATION"
+            }],
+            "application_context": {
+                "return_url": url_for('capture_paypal_payment', _external=True),
+                "cancel_url": url_for('donate', _external=True),
+                "brand_name": "Your NGO",
+                "locale": "en-IN",
+                "shipping_preference": "NO_SHIPPING"
+            }
+        }
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code != 201:
+            print(f"Error Response: {response.status_code} - {response.text}")
+            return {"error": response.text}, response.status_code  # Return dict with status
+        return response.json()
+
+    def capture_order(self, order_id):
+        url = f'{self.base_url}/v2/checkout/orders/{order_id}/capture'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {self.access_token}'
+        }
+        response = requests.post(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
+paypal_client = PayPalClient()
 
 @app.route('/create-paypal-order', methods=['POST'])
 def create_paypal_order():
     data = request.get_json()
-    amount = data['amount']
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {"payment_method": "paypal"},
-        "transactions": [{
-            "amount": {"total": str(amount), "currency": "USD"},
-            "description": "Donation to Your NGO"
-        }],
-        "redirect_urls": {
-            "return_url": url_for('capture_paypal_payment', _external=True),
-            "cancel_url": url_for('donate', _external=True)
-        }
-    })
-    if payment.create():
-        return jsonify({"orderID": payment.id})
-    else:
-        return jsonify({"error": payment.error}), 500
+    logger.debug(f"Received data: {data}")
+    donor_name = data.get('donor-name')
+    donor_email = data.get('donor-email')
+    amount = float(data.get('amount', 0))
+
+    if not donor_name or not donor_email or amount <= 0:
+        logger.error(f"Invalid input: name={donor_name}, email={donor_email}, amount={amount}")
+        return jsonify({'error': 'Missing or invalid data'}), 400
+
+    session['donor_name'] = donor_name  # Store in session
+    session['donor_email'] = donor_email  # Store in session
+
+    paypal_client = PayPalClient()
+    order_response = paypal_client.create_order(amount, donor_name, donor_email)
+    if isinstance(order_response, tuple) and 'error' in order_response[0]:
+        return jsonify(order_response[0]), order_response[1]
+    return jsonify({'orderID': order_response['id']})
 
 @app.route('/capture-paypal-payment', methods=['POST'])
 def capture_paypal_payment():
     data = request.get_json()
-    payment = paypalrestsdk.Payment.find(data['orderID'])
-    if payment.execute({"payer_id": payment.payer.payer_info.payer_id}):
-        donor_name = payment.transactions[0].item_list.shipping_address.recipient_name or 'Anonymous'
-        donor_email = payment.payer.payer_info.email or ''
-        amount = float(payment.transactions[0].amount.total)
+    order_id = data.get('orderID')
+    logger.debug(f"Received data for capture: {data}")
+
+    try:
+        capture = paypal_client.capture_order(order_id)
+        logger.debug(f"Capture response: {capture}")
+        
+        purchase_unit = capture['purchase_units'][0]
+        captures = purchase_unit.get('payments', {}).get('captures', [])
+        if not captures:
+            raise ValueError("No capture data found in response")
+        
+        capture_data = captures[0]
+        amount = float(capture_data['amount']['value'])
+        payment_id = capture_data['id']
+        donor_name = session.get('donor_name', purchase_unit.get('custom_id', 'Anonymous'))  # Use session name
+        donor_email = session.get('donor_email') or ''  # Use session email
+
+        logger.debug(f"Using donor_name: {donor_name} from session: {session.get('donor_name')} or custom_id: {purchase_unit.get('custom_id')}")
+        logger.debug(f"Using donor_email: {donor_email} from session: {session.get('donor_email')}")
+
         donation = Donation(
             name=donor_name,
             email=donor_email,
             amount=amount,
             date=datetime.now(),
-            payment_id=payment.id,
-            order_id=data['orderID'],
+            payment_id=payment_id,
+            order_id=order_id,
             payment_method='paypal'
         )
         db.session.add(donation)
@@ -269,24 +355,38 @@ def capture_paypal_payment():
         try:
             msg = Message(
                 subject="Thank You for Your Donation!",
-                recipients=[donor_email],
+                recipients=[donor_email] if donor_email else [],
                 html=render_template(
                     'email_receipt.html',
                     name=donor_name,
                     amount=amount,
                     date=donation.date.strftime('%b %d, %Y'),
-                    payment_id=payment.id
+                    payment_id=payment_id,
+                    currency_symbol='$' if donation.payment_method == 'paypal' else '₹'  # Dynamic currency
                 )
             )
-            mail.send(msg)
-            print(f"Email sent successfully to {donor_email} at {datetime.now()}")
+            logger.debug(f"Email message created: subject={msg.subject}, recipients={msg.recipients}, html={msg.html}")
+            if donor_email:
+                with app.app_context():
+                    mail.send(msg)
+                logger.info(f"Email sent successfully to {donor_email} at {datetime.now()}")
+            else:
+                logger.warning("No valid donor email provided, skipping email")
         except Exception as e:
-            print(f"Failed to send email: {str(e)}")
+            logger.error(f"Failed to send email: {str(e)}", exc_info=True)
 
         session['just_donated'] = True
-        return jsonify({"status": "success", "redirect_url": url_for('donation_success', _external=True)})
-    else:
-        return jsonify({"status": "failure", "error": payment.error}), 400
+        session['donor_name'] = donor_name  # Update session name
+        return jsonify({'status': 'success', 'redirect_url': url_for('donation_success', _external=True)})
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Payment capture failed: {str(e)}")
+        return jsonify({'status': 'failure', 'error': str(e)}), 400
+    except (KeyError, ValueError) as e:
+        logger.error(f"Invalid capture response: {str(e)}")
+        return jsonify({'status': 'failure', 'error': f"Invalid response data: {str(e)}"}), 400
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        return jsonify({'status': 'failure', 'error': str(e)}), 500
 
 @app.route('/donation-success')
 def donation_success():
@@ -297,18 +397,21 @@ def donation_success():
     session.pop('just_donated', None)
     latest_donation = Donation.query.order_by(Donation.date.desc()).first()
     if latest_donation:
+        currency_symbol = '$' if latest_donation.payment_method == 'paypal' else '₹'
         return render_template('success.html', 
-                              name=latest_donation.name, 
-                              amount=latest_donation.amount, 
-                              email=latest_donation.email, 
-                              date=latest_donation.date.strftime('%b %d, %Y'), 
-                              payment_id=latest_donation.payment_id)
+                              name=session.get('donor_name', latest_donation.name),  # Fallback to DB if session fails
+                              amount=latest_donation.amount,
+                              email=latest_donation.email,
+                              date=latest_donation.date.strftime('%b %d, %Y'),
+                              payment_id=latest_donation.payment_id,
+                              currency_symbol=currency_symbol)
     return render_template('success.html', 
-                          name='Donor', 
-                          amount='XXX', 
-                          email='your email', 
-                          date=datetime.now().strftime('%b %d, %Y'), 
-                          payment_id='XXX-XXX-XXX')
+                          name='Donor',
+                          amount='XXX',
+                          email='your email',
+                          date=datetime.now().strftime('%b %d, %Y'),
+                          payment_id='XXX-XXX-XXX',
+                          currency_symbol='₹')
 
 @app.route('/fundraiser/<int:fundraiser_id>')
 def fundraiser(fundraiser_id):

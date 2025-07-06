@@ -428,7 +428,23 @@ def fundraiser(fundraiser_id):
 
 @app.route('/success/<int:story_id>')
 def success_story(story_id):
-    return render_template('success_story.html', story_id=story_id)
+    # Sample data - replace with database query
+    success_stories = {
+        1: {
+            'title': "Lucky’s Recovery",
+            'image': "https://via.placeholder.com/600x300?text=Lucky's+Recovery",
+            'description': "Lucky, a young boy from a remote village, was saved from a life-threatening illness thanks to your donations. His family now thrives with better healthcare.",
+            'impact': "Provided medical care to 50+ families"
+        },
+        2: {
+            'title': "Gauri’s Rescue",
+            'image': "https://via.placeholder.com/600x300?text=Gauri’s+Rescue",
+            'description': "Gauri, a stray dog, was rescued and rehabilitated, finding a loving home. Your support made this possible.",
+            'impact': "Rescued and rehomed 20+ animals"
+        }
+    }
+    story_data = success_stories.get(story_id)
+    return render_template('success_story.html', story_id=story_id, story_data=story_data)
 
 @app.route('/success/all')
 def success_all():

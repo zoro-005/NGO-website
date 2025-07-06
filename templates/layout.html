@@ -27,8 +27,10 @@
   <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
       <div>
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo"> 
-        <a class="navbar-brand" href="/">S.E.S.F</a>
+        <a class="navbar-brand" href="/">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" style="max-height: 50px; margin-right: 10px; vertical-align: middle;">
+          S.E.S.F
+        </a>
       </div>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">

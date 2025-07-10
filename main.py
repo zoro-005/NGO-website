@@ -9,20 +9,21 @@ from googleapiclient.discovery import build
 import razorpay
 import os
 import requests
-import logging
+import json
+# import logging
 
 load_dotenv()
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+app.secret_key = 'supersecretkey'   
 app.config['SESSION_TYPE'] = 'filesystem'
 from flask_session import Session
 Session(app)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@localhost/ngo"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 db = SQLAlchemy(app)
 
 # Email configuration
@@ -68,7 +69,7 @@ class Donation(db.Model):
 
 # Google Sheets setup
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-creds = Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
+creds = Credentials.from_service_account_info(json.loads(os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')), scopes=SCOPES)
 service = build('sheets', 'v4', credentials=creds)
 SHEET_ID = os.getenv('CLIENT_SHEET_ID')
 
@@ -223,9 +224,10 @@ def verify_payment():
                 )
             )
             mail.send(msg)
-            print(f"Email sent successfully to {notes.get('email')} at {datetime.now()}")
+            #print(f"Email sent successfully to {notes.get('email')} at {datetime.now()}")
         except Exception as e:
-            print(f"Failed to send email: {str(e)}")
+            pass
+            #print(f"Failed to send email: {str(e)}")
 
         session['just_donated'] = True
         return jsonify({"status": "success", "redirect_url": url_for('donation_success', _external=True)})
@@ -279,7 +281,7 @@ class PayPalClient:
         }
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code != 201:
-            print(f"Error Response: {response.status_code} - {response.text}")
+            # print(f"Error Response: {response.status_code} - {response.text}")
             return {"error": response.text}, response.status_code  # Return dict with status
         return response.json()
 
@@ -298,13 +300,13 @@ paypal_client = PayPalClient()
 @app.route('/create-paypal-order', methods=['POST'])
 def create_paypal_order():
     data = request.get_json()
-    logger.debug(f"Received data: {data}")
+    # logger.debug(f"Received data: {data}")
     donor_name = data.get('donor-name')
     donor_email = data.get('donor-email')
     amount = float(data.get('amount', 0))
 
     if not donor_name or not donor_email or amount <= 0:
-        logger.error(f"Invalid input: name={donor_name}, email={donor_email}, amount={amount}")
+        # logger.error(f"Invalid input: name={donor_name}, email={donor_email}, amount={amount}")
         return jsonify({'error': 'Missing or invalid data'}), 400
 
     session['donor_name'] = donor_name  # Store in session
@@ -320,11 +322,11 @@ def create_paypal_order():
 def capture_paypal_payment():
     data = request.get_json()
     order_id = data.get('orderID')
-    logger.debug(f"Received data for capture: {data}")
+    #logger.debug(f"Received data for capture: {data}")
 
     try:
         capture = paypal_client.capture_order(order_id)
-        logger.debug(f"Capture response: {capture}")
+        #logger.debug(f"Capture response: {capture}")
         
         purchase_unit = capture['purchase_units'][0]
         captures = purchase_unit.get('payments', {}).get('captures', [])
@@ -337,8 +339,8 @@ def capture_paypal_payment():
         donor_name = session.get('donor_name', purchase_unit.get('custom_id', 'Anonymous'))  # Use session name
         donor_email = session.get('donor_email') or ''  # Use session email
 
-        logger.debug(f"Using donor_name: {donor_name} from session: {session.get('donor_name')} or custom_id: {purchase_unit.get('custom_id')}")
-        logger.debug(f"Using donor_email: {donor_email} from session: {session.get('donor_email')}")
+        #logger.debug(f"Using donor_name: {donor_name} from session: {session.get('donor_name')} or custom_id: {purchase_unit.get('custom_id')}")
+        #logger.debug(f"Using donor_email: {donor_email} from session: {session.get('donor_email')}")
 
         donation = Donation(
             name=donor_name,
@@ -365,27 +367,29 @@ def capture_paypal_payment():
                     currency_symbol='$' if donation.payment_method == 'paypal' else '₹'  # Dynamic currency
                 )
             )
-            logger.debug(f"Email message created: subject={msg.subject}, recipients={msg.recipients}, html={msg.html}")
+            #logger.debug(f"Email message created: subject={msg.subject}, recipients={msg.recipients}, html={msg.html}")
             if donor_email:
                 with app.app_context():
                     mail.send(msg)
-                logger.info(f"Email sent successfully to {donor_email} at {datetime.now()}")
+                #logger.info(f"Email sent successfully to {donor_email} at {datetime.now()}")
             else:
-                logger.warning("No valid donor email provided, skipping email")
+                pass
+                #logger.warning("No valid donor email provided, skipping email")
         except Exception as e:
-            logger.error(f"Failed to send email: {str(e)}", exc_info=True)
+            pass
+            #logger.error(f"Failed to send email: {str(e)}", exc_info=True)
 
         session['just_donated'] = True
         session['donor_name'] = donor_name  # Update session name
         return jsonify({'status': 'success', 'redirect_url': url_for('donation_success', _external=True)})
     except requests.exceptions.RequestException as e:
-        logger.error(f"Payment capture failed: {str(e)}")
+        #logger.error(f"Payment capture failed: {str(e)}")
         return jsonify({'status': 'failure', 'error': str(e)}), 400
     except (KeyError, ValueError) as e:
-        logger.error(f"Invalid capture response: {str(e)}")
+        #logger.error(f"Invalid capture response: {str(e)}")
         return jsonify({'status': 'failure', 'error': f"Invalid response data: {str(e)}"}), 400
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
+        #logger.error(f"Unexpected error: {str(e)}")
         return jsonify({'status': 'failure', 'error': str(e)}), 500
 
 @app.route('/donation-success')
@@ -511,4 +515,4 @@ def get_fundraisers():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=False)

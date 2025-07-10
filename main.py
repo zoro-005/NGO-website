@@ -431,10 +431,15 @@ def success_story(story_id):
     # Sample data - replace with database query
     success_stories = {
         1: {
-            'title': "Lucky’s Recovery",
+            'title': "🐾 A New Dawn for Animal Welfare: SESF Launches Meerut’s First Animal Ambulance",
             'image': "https://via.placeholder.com/600x300?text=Lucky's+Recovery",
-            'description': "Lucky, a young boy from a remote village, was saved from a life-threatening illness thanks to your donations. His family now thrives with better healthcare.",
-            'impact': "Provided medical care to 50+ families"
+            'description': """In a heartfelt move that blends compassion with action, SESF—Sardhana Environmental and Social Foundation—made history by introducing Meerut’s first dedicated animal ambulance. This transformative leap in animal welfare was made possible thanks to the generous donation from Maneka Gandhi, a towering advocate for animal rights in India.
+            Her contribution wasn’t just a van outfitted with medical supplies. It was a rolling sanctuary, purpose-built for rescuing, treating, and transporting injured or distressed animals across the region. For SESF, this vehicle represents more than convenience—it’s a declaration of their mission to ensure that animals, too, receive timely care and dignity.
+            When the ambulance arrived, wrapped in anticipation and promise, the SESF team wasted no time. Soon, it was on its first call—responding to a wounded street dog that had been struck by a vehicle. With proper equipment and trained volunteers, the ambulance offered care on the spot, changing the narrative for countless animals who would’ve otherwise been forgotten.
+            Our director shared: “Before this, our response was limited. We had heart, but no wheels. Now we can reach any corner of Meerut, and that changes everything.”
+            As the siren now wails through the city, it carries more than sound—it carries a message: Every life matters. And with SESF and this pioneering ambulance, Meerut has taken its first bold step toward a more humane future.
+            """,
+            'impact': "With Meerut's first animal ambulance, SESF turns compassion into rapid response—redefining how a city protects its voiceless lives."
         },
         2: {
             'title': "Gauri’s Rescue",

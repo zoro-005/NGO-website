@@ -10,6 +10,9 @@ import razorpay
 import os
 import requests
 import json
+import pymysql
+pymysql.install_as_MySQLdb()
+
 # import logging
 
 load_dotenv()

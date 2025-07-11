@@ -276,6 +276,7 @@ def process_donation():
         order = razorpay_client.order.create(data=order_data)
         return jsonify({"order_id": order['id']})
     except Exception as e:
+        print("Razorpay order creation failed:", str(e))  # 🔍 Add this
         return jsonify({"error": str(e)}), 500
 
 

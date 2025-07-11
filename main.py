@@ -45,12 +45,12 @@ def apply_security_headers(response):
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Content-Security-Policy'] = (
         "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.juicer.io https://static.juicer.io https://www.google.com https://maps.googleapis.com https://maps.gstatic.com; "
-        "script-src 'self' 'unsafe-inline' https://code.jquery.com https://www.juicer.io https://checkout.razorpay.com https://www.paypal.com; "
+        "script-src 'self' 'unsafe-inline' https://code.jquery.com https://www.juicer.io https://checkout.razorpay.com https://www.paypal.com https://www.sandbox.paypal.com; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.juicer.io; "
         "font-src 'self' https://fonts.gstatic.com https://static.juicer.io; "
         "img-src 'self' data: https:; "
-        "frame-src 'self' https://www.google.com https://www.google.com/maps/embed https://maps.googleapis.com https://www.paypal.com; "
-        "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.juicer.io;"
+        "frame-src 'self' https://www.google.com https://maps.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://checkout.razorpay.com https://api.razorpay.com; "
+        "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.sandbox.paypal.com https://www.juicer.io;"
     )
 
     return response

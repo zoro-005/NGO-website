@@ -1,18 +1,18 @@
-from flask import Flask, render_template, request, redirect, flash, url_for, jsonify, session
+from flask import Flask, render_template, request, redirect, flash, url_for, jsonify, session, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
+from flask_session import Session
 import razorpay
 import os
 import requests
 import json
 import pymysql
 pymysql.install_as_MySQLdb()
-
 # import logging
 
 load_dotenv()
@@ -20,10 +20,32 @@ load_dotenv()
 # logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'   
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Ensure this is set in Railway Variables
 app.config['SESSION_TYPE'] = 'filesystem'
-from flask_session import Session
+app.config['SESSION_COOKIE_SECURE'] = True  # Forces cookies to use HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevents JavaScript access
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Mitigates CSRF
 Session(app)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)  # 30-minute timeout
+app.config['SESSION_PERMANENT'] = True
+
+from flask_wtf import CSRFProtect
+csrf = CSRFProtect(app)
+
+def create_tables():
+    with app.app_context():
+        db.create_all()
+
+@app.before_request
+def apply_security_headers():
+    response = make_response()
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com;"
+    return response
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
@@ -94,6 +116,22 @@ def get_latest_fundraisers(limit=6):
         return fundraisers[::-1][:limit]  # Reverse the list and limit to the specified number
     return []
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+limiter = Limiter(app, key_func=get_remote_address)
+
+@app.route('/authenticate-client', methods=['POST'])
+@limiter.limit("10 per hour")  # Limit to 10 attempts per IP per hour
+def authenticate_client():
+    client_key = os.getenv('CLIENT_KEY')
+    provided_key = request.form.get('client_key')
+    if provided_key == client_key:
+        session['authenticated'] = True
+        return redirect(url_for('submit_fundraiser'))
+    flash('Invalid client key. Access denied.')
+    return redirect(url_for('home'))
+
 # Routes
 @app.route('/')
 def home():
@@ -113,17 +151,36 @@ def blog_single():
     return render_template('blog-single.html')
 
 @app.route('/contact', methods=["GET", "POST"])
+@limiter.limit("10 per hour")  # Added rate limit
 def contact():
     if request.method == "POST":
         name = request.form.get('name')
         email = request.form.get('email')
         subject = request.form.get('subject')
         message = request.form.get('message')
-        entry = Contact(name=name, email=email, subject=subject, message=message, date=datetime.now())
-        db.session.add(entry)
-        db.session.commit()
-        flash('Message sent successfully!')
-        return redirect(url_for('contact', success_message=True))
+        if name and email and subject and message:
+            # Save to database
+            entry = Contact(name=name, email=email, subject=subject, message=message, date=datetime.now())
+            db.session.add(entry)
+            db.session.commit()
+
+            # Send email notification to client
+            msg = Message('New Contact Us Submission',
+                          recipients=[os.getenv('CLIENT_EMAIL')],  # Use env var for client's email
+                          body=f"""
+                          New submission from Contact Us form:
+                          - Name: {name}
+                          - Email: {email}
+                          - Subject: {subject}
+                          - Message: {message}
+                          - Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S IST')}
+                          """)
+            mail.send(msg)
+
+            flash('Message sent successfully!')
+            return redirect(url_for('contact', success_message=True))
+        else:
+            flash('Please fill in all fields.', 'error')
     success_message = request.args.get('success_message')
     return render_template('contact.html', success_message=success_message)
 
@@ -133,17 +190,36 @@ def donate():
     return render_template('donate.html', donors=donors, key_id=os.getenv("RAZORPAY_KEY_ID"), paypal_client_id=os.getenv("PAYPAL_CLIENT_ID"))
 
 @app.route('/join_us', methods=["GET", "POST"])
+@limiter.limit("10 per hour")  # Reduced from 100 per day to 10 per hour
 def join_us():
     if request.method == "POST":
         name = request.form.get('name')
         email = request.form.get('email')
         phone = request.form.get('phone')
         reason = request.form.get('reason')
-        entry = Volunteer(name=name, email=email, phone=phone, reason=reason, date=datetime.now())
-        db.session.add(entry)
-        db.session.commit()
-        flash('Thank you for signing up as a volunteer!')
-        return redirect(url_for('join_us', success_message=True))
+        if name and email and phone and reason:
+            # Save to database
+            entry = Volunteer(name=name, email=email, phone=phone, reason=reason, date=datetime.now())
+            db.session.add(entry)
+            db.session.commit()
+
+            # Send email notification to client
+            msg = Message('New Join Us Submission',
+                          recipients=[os.getenv('CLIENT_EMAIL')],  # Use env var for client's email
+                          body=f"""
+                          New submission from Join Us form:
+                          - Name: {name}
+                          - Email: {email}
+                          - Phone: {phone}
+                          - Reason: {reason}
+                          - Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S IST')}
+                          """)
+            mail.send(msg)
+
+            flash('Thank you for signing up as a volunteer!')
+            return redirect(url_for('join_us', success_message=True))
+        else:
+            flash('Please fill in all fields.', 'error')
     success_message = request.args.get('success_message')
     return render_template('join_us.html', success_message=success_message)
 
@@ -447,67 +523,45 @@ def success_story(story_id):
             As the siren now wails through the city, it carries more than sound—it carries a message: Every life matters. And with SESF and this pioneering ambulance, Meerut has taken its first bold step toward a more humane future.
             """,
             'impact': "With Meerut's first animal ambulance, SESF turns compassion into rapid response—redefining how a city protects its voiceless lives."
-        },
-        2: {
-            'title': "Gauri’s Rescue",
-            'image': "https://via.placeholder.com/600x300?text=Gauri’s+Rescue",
-            'description': "Gauri, a stray dog, was rescued and rehabilitated, finding a loving home. Your support made this possible.",
-            'impact': "Rescued and rehomed 20+ animals"
         }
     }
     story_data = success_stories.get(story_id)
     return render_template('success_story.html', story_id=story_id, story_data=story_data)
 
-@app.route('/success/all')
-def success_all():
-    return render_template('success_all.html')
+# @app.route('/success/all')
+# def success_all():
+#     return render_template('success_all.html')
 
 @app.route('/submit-fundraiser', methods=['GET', 'POST'])
 def submit_fundraiser():
-    client_key = os.getenv('CLIENT_KEY')
-    if request.method == 'POST':
-        if 'client_key' in request.form:
-            provided_key = request.form.get('client_key')
-            if provided_key != client_key:
-                flash('Invalid client key. Access denied.')
-                return render_template('submit_fundraiser.html', show_modal=True)
-            session['authenticated'] = True
-            return redirect(url_for('submit_fundraiser'))
-        else:
-            name = request.form.get('fundraiser_name')
-            amount = request.form.get('amount')
-            description = request.form.get('description')
-            image = request.files.get('image')
-            if not image or not image.filename:
-                flash('Image attachment is required.')
-                return render_template('submit_fundraiser.html', show_modal=False)
-            filename = secure_filename(image.filename)
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            image.save(image_path)
-            image_url = url_for('static', filename=f'images/{filename}')
-            values = [datetime.now().isoformat(), name, amount, description, image_url]
-            sheet = service.spreadsheets()
-            sheet.values().append(
-                spreadsheetId=SHEET_ID,
-                range='Form Responses 1',
-                valueInputOption='RAW',
-                body={'values': [values]}
-            ).execute()
-            session.pop('authenticated', None)
-            flash('Fundraiser updated successfully!')
-            return redirect(url_for('home'))
+    if request.method == 'POST' and not session.get('authenticated', False):
+        flash('Please authenticate first.')
+        return redirect(url_for('home'))
+    if request.method == 'POST' and session.get('authenticated', False):
+        name = request.form.get('fundraiser_name')
+        amount = request.form.get('amount')
+        description = request.form.get('description')
+        image = request.files.get('image')
+        if not image or not image.filename:
+            flash('Image attachment is required.')
+            return render_template('submit_fundraiser.html', show_modal=False)
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image.save(image_path)
+        image_url = url_for('static', filename=f'images/{filename}')
+        values = [datetime.now().isoformat(), name, amount, description, image_url]
+        sheet = service.spreadsheets()
+        sheet.values().append(
+            spreadsheetId=SHEET_ID,
+            range='Form Responses 1',
+            valueInputOption='RAW',
+            body={'values': [values]}
+        ).execute()
+        session.pop('authenticated', None)
+        flash('Fundraiser updated successfully!')
+        return redirect(url_for('home'))
     show_modal = not session.get('authenticated', False)
     return render_template('submit_fundraiser.html', show_modal=show_modal)
-
-@app.route('/authenticate-client', methods=['POST'])
-def authenticate_client():
-    client_key = os.getenv('CLIENT_KEY')
-    provided_key = request.form.get('client_key')
-    if provided_key == client_key:
-        session['authenticated'] = True
-        return redirect(url_for('submit_fundraiser'))
-    flash('Invalid client key. Access denied.')
-    return redirect(url_for('home'))
 
 @app.route('/get-fundraisers', methods=['GET'])
 def get_fundraisers():
@@ -515,7 +569,23 @@ def get_fundraisers():
     print(f"Fundraisers fetched: {fundraisers}")
     return jsonify([{'id': i + 1, 'name': f['name'] or 'Unnamed Fundraiser'} for i, f in enumerate(fundraisers)])
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=False)
+class RestrictMethodsMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        if environ['REQUEST_METHOD'] == 'OPTIONS':
+            start_response('405 Method Not Allowed', [('Content-Type', 'text/plain')])
+            return [b'Method Not Allowed']
+        return self.app(environ, start_response)
+
+app.wsgi_app = RestrictMethodsMiddleware(app.wsgi_app)
+
+# Call it at the end of the file, after all models are defined
+create_tables()
+
+
+# if __name__ == '__main__':
+#     with app.app_context():
+#         db.create_all()
+#     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=False)

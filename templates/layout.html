@@ -18,124 +18,125 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/flaticon.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='css/icomoon.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='css/fancybox.min.css')}}">
-
     <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
   </head>
   <body>
     
-  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-    <div class="container">
-      <div>
-        <a class="navbar-brand" href="/" style="font-weight:600;">
-          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" style="max-height: 50px; margin-right: 10px; vertical-align: middle;">
-          SESF
-        </a>
-      </div>
-      
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="oi oi-menu"></span> Menu
-      </button>
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+      <div class="container">
+        <div>
+          <a class="navbar-brand" href="/" style="font-weight:600;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo" style="max-height: 50px; margin-right: 10px; vertical-align: middle;">
+            SESF
+          </a>
+        </div>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="oi oi-menu"></span> Menu
+        </button>
 
-      <div class="collapse navbar-collapse" id="ftco-nav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a href="/" class="nav-link">Home</a></li>               
-                <li class="nav-item {% if request.path == '/gallery' %}active{% endif %}"><a href="/gallery" class="nav-link">Gallery</a></li>
-                <li class="nav-item {% if request.path == '/about' %}active{% endif %}"><a href="/about" class="nav-link">About</a></li>
-                <li class="nav-item {% if request.path == '/contact' %}active{% endif %}"><a href="/contact" class="nav-link">Contact Us</a></li>
-                <li class="nav-item {% if request.path == '/join_us' %}active{% endif %}"><a href="/join_us" class="nav-link">Join Us</a></li>
-                <li class="nav-item {% if request.path == '/donate' %}active{% endif %}"><a href="/donate" class="nav-link donate-button-header">Donate</a></li>
-                
-              </ul>
-       
+        <div class="collapse navbar-collapse" id="ftco-nav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a href="/" class="nav-link">Home</a></li>               
+            <li class="nav-item {% if request.path == '/gallery' %}active{% endif %}"><a href="/gallery" class="nav-link">Gallery</a></li>
+            <li class="nav-item {% if request.path == '/about' %}active{% endif %}"><a href="/about" class="nav-link">About</a></li>
+            <li class="nav-item {% if request.path == '/contact' %}active{% endif %}"><a href="/contact" class="nav-link">Contact Us</a></li>
+            <li class="nav-item {% if request.path == '/join_us' %}active{% endif %}"><a href="/join_us" class="nav-link">Join Us</a></li>
+            <li class="nav-item {% if request.path == '/donate' %}active{% endif %}"><a href="/donate" class="nav-link donate-button-header">Donate</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
-  <!-- END nav -->
+    </nav>
+    <!-- END nav -->
 
-  {% block body %} {% endblock %}
-  
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <ul class="contact-info">
-          <li><a href="https://www.google.com/maps/place/Sankalap+Ek+Sewa+Foundation+(SESF)/@29.037994,77.717945,1450m/data=!3m1!1e3!4m15!1m8!3m7!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!2sSankalap+Ek+Sewa+Foundation+(SESF)!8m2!3d29.0379939!4d77.7179452!10e1!16s%2Fg%2F11vz3sj45s!3m5!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!8m2!3d29.0379939!4d77.7179452!16s%2Fg%2F11vz3sj45s?hl=en&entry=ttu&g_ep=EgoyMDI1MDIyNS4wIKXMDSoASAFQAw%3D%3D" target="_blank"><span class="icon icon-map-marker"></span><span class="text" style="padding-top: 5px;"> Shop No 2 Green City Colony, Krishna Nagar, Sofipur, Meerut, Uttar Pradesh, India</span></a></li>
-          <li><a href="tel:+919258984359"><span class="icon icon-phone"></span><span class="text"> 92589-84359</span></a></li>
-          <li><a href="mailto:sankalpeksewa@gmail.com"><span class="icon icon-envelope"></span><span class="text" style="padding-top: 5px;"> sankalpeksewa@gmail.com</span></a></li>
-        </ul>
-        <ul class="social-icons" style="list-style: none; display: flex; justify-content: center; gap: 20px; font-size: x-large; padding-top: 10px;">
-          <li><a href="https://www.facebook.com/people/Sankalap-Ek-Sewa-Foundation/61559734657339/" target="_blank"><span class="icon icon-facebook"></span></a></li>
-          <li><a href="https://www.instagram.com/sesf.official/" target="_blank"><span class="icon icon-instagram"></span></a></li>
-          <li><a href="https://www.linkedin.com/in/sankalp-ek-sewa-3425a6305/?originalSubdomain=in" target="_blank"><span class="icon icon-linkedin"></span></a></li>
-          <li><a href="https://www.youtube.com/@SankalapEkSewa" target="_blank"><span class="icon icon-youtube"></span></a></li>
-        </ul>
+    {% block body %} {% endblock %}
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <ul class="contact-info">
+            <li><a href="https://www.google.com/maps/place/Sankalap+Ek+Sewa+Foundation+(SESF)/@29.037994,77.717945,1450m/data=!3m1!1e3!4m15!1m8!3m7!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!2sSankalap+Ek+Sewa+Foundation+(SESF)!8m2!3d29.0379939!4d77.7179452!10e1!16s%2Fg%2F11vz3sj45s!3m5!1s0x390c6fd9f619b7a9:0x3e881b36751971d2!8m2!3d29.0379939!4d77.7179452!16s%2Fg%2F11vz3sj45s?hl=en&entry=ttu&g_ep=EgoyMDI1MDIyNS4wIKXMDSoASAFQAw%3D%3D" target="_blank"><span class="icon icon-map-marker"></span><span class="text" style="padding-top: 5px;"> Shop No 2 Green City Colony, Krishna Nagar, Sofipur, Meerut, Uttar Pradesh, India</span></a></li>
+            <li><a href="tel:+919258984359"><span class="icon icon-phone"></span><span class="text"> 92589-84359</span></a></li>
+            <li>
+              <a href="javascript:void(0);" onclick="this.href='mailto:' + 'sankalpeksewa' + '@' + 'gmail.com'">
+                <span class="icon icon-envelope"></span>
+                <span class="text" style="padding-top: 5px;">sankalpeksewa@gmail.com</span>
+              </a>
+            </li>
+          </ul>
+          <ul class="social-icons" style="list-style: none; display: flex; justify-content: center; gap: 20px; font-size: x-large; padding-top: 10px;">
+            <li><a href="https://www.facebook.com/people/Sankalap-Ek-Sewa-Foundation/61559734657339/" target="_blank"><span class="icon icon-facebook"></span></a></li>
+            <li><a href="https://www.instagram.com/sesf.official/" target="_blank"><span class="icon icon-instagram"></span></a></li>
+            <li><a href="https://www.linkedin.com/in/sankalp-ek-sewa-3425a6305/?originalSubdomain=in" target="_blank"><span class="icon icon-linkedin"></span></a></li>
+            <li><a href="https://www.youtube.com/@SankalapEkSewa" target="_blank"><span class="icon icon-youtube"></span></a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="row pt-5">
-      <div class="col-md-12 text-center">
-        <p style="opacity: 0.01;">
-          Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ion-ios-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-        </p>
-        <small>
-          <a href="#" id="addFundraiserLink" style="color: transparent; text-decoration: none;" data-toggle="modal" data-target="#clientModal">Admin</a>
-        </small>
+      <div class="row pt-5">
+        <div class="col-md-12 text-center">
+          <p style="opacity: 0.01;">
+            Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ion-ios-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+          </p>
+          <small>
+            <a href="#" id="addFundraiserLink" style="color: transparent; text-decoration: none;" data-toggle="modal" data-target="#clientModal">Admin</a>
+          </small>
+        </div>
       </div>
-    </div>
-  
-    <!-- Client Modal (for Add Fundraiser) -->
-    <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="clientModalLabel">Add Fundraiser</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form method="POST" action="{{ url_for('authenticate_client') }}">
-              <div class="form-group">
-                <label for="client_key">Client Key</label>
-                <input type="password" class="form-control" id="client_key" name="client_key" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+    
+      <!-- Client Modal (for Add Fundraiser) -->
+      <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="clientModalLabel">Add Fundraiser</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="POST" action="{{ url_for('authenticate_client') }}">
+                {{ csrf_token() }}
+                <div class="form-group">
+                  <label for="client_key">Client Key</label>
+                  <input type="password" class="form-control" id="client_key" name="client_key" required minlength="8">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
   
-        
-      
-  
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
 
-  <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script> <!-- Updated to your file -->
+    <script src="{{ url_for('static', filename='jquery-migrate-3.0.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.easing.1.3.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.stellar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-datepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.fancybox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='aos.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery.animateNumber.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='google-map.js') }}"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 
-
-  <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/jquery-migrate-3.0.1.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/popper.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/jquery.easing.1.3.js')}}"></script>
-  <script src="{{url_for('static',filename='js/jquery.waypoints.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/jquery.stellar.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/owl.carousel.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/jquery.magnific-popup.min.js')}}"></script>
-  <script src="{{url_for('static',filename='js/bootstrap-datepicker.js')}}"></script>
-
-  <script src="{{url_for('static',filename='js/jquery.fancybox.min.js')}}"></script>
-  
-  <script src="{{url_for('static',filename='js/aos.js')}}"></script>
-  <script src="{{url_for('static',filename='js/jquery.animateNumber.min.js')}}"></script>
-
-  <script src="{{url_for('static',filename='js/google-map.js')}}"></script>
-  <script src="{{url_for('static',filename='js/main.js')}}"></script>
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+    <!-- Fallback Toggle Script -->
+    <script>
+      $(document).ready(function() {
+        $('.navbar-toggler').click(function() {
+          $('#ftco-nav').collapse('toggle');
+        });
+      });
+    </script>
   </body>
   <style>
     .footer {

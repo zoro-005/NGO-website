@@ -26,22 +26,23 @@
                 <div class="form-volunteer">
                     <h2 style = "font-weight: 900; color:black; text-decoration:underline;">Be A Volunteer Today</h2>
                     <form action="/join_us" method="post" onsubmit="return validateForm()">
+                        {{ csrf_token() }}
                         <div class="form-group">
-                            <input type="text" class="form-control px-3 py-3" name="name" id="name" placeholder="Your Name" required>
+                          <input type="text" class="form-control px-3 py-3" name="name" id="name" placeholder="Your Name" required minlength="2">
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-control px-3 py-3" name="email" id="email" placeholder="Your Email" required>
+                          <input type="email" class="form-control px-3 py-3" name="email" id="email" placeholder="Your Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                         </div>
                         <div class="form-group">
-                            <input type="tel" class="form-control px-3 py-3" name="phone" id="phone" placeholder="Your Phone no." required>
+                          <input type="tel" class="form-control px-3 py-3" name="phone" id="phone" placeholder="Your Phone no." required pattern="[0-9]{10}" title="10-digit phone number">
                         </div>
                         <div class="form-group">
-                            <textarea name="reason" id="message" cols="30" rows="7" class="form-control px-3 py-3" placeholder="Your reason to join?" required></textarea>
+                          <textarea name="reason" id="message" cols="30" rows="7" class="form-control px-3 py-3" placeholder="Your reason to join?" required minlength="10"></textarea>
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">
+                          <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">
                         </div>
-                    </form>
+                      </form>
                 </div>
             </div>
         </div>

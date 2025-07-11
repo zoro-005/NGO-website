@@ -32,23 +32,24 @@
         <div id="fundraiserForm" {% if show_modal %}style="display: none;"{% endif %}>
           <div class="card shadow-sm p-4"> <!-- Card for better elevation and padding -->
             <form method="POST" action="{{ url_for('submit_fundraiser') }}" enctype="multipart/form-data">
+              {{ csrf_token() }}
               <div class="form-group">
                 <label for="fundraiser_name">Fundraiser Name</label>
-                <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required>
+                <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required minlength="2">
               </div>
               <div class="form-group">
                 <label for="amount">Donation Amount (₹)</label>
-                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required min="1">
               </div>
               <div class="form-group">
                 <label for="description">Fundraiser Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="4" required minlength="10"></textarea>
               </div>
               <div class="form-group">
                 <label for="image">Upload Image (Required)</label>
-                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
               </div>
-              <button type="submit" class="btn btn-primary py-2 px-4 mt-3">Submit Fundraiser</button> <!-- Added margin-top -->
+              <button type="submit" class="btn btn-primary py-2 px-4 mt-3">Submit Fundraiser</button>
             </form>
           </div>
         </div>

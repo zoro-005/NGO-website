@@ -1,49 +1,22 @@
-{% extends "layout.html" %}
 {% block body %}
-  <div class="container my-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8 text-center">
-        <h2>Fundraiser Details</h2>
-        <p class="lead">Fundraiser ID: {{ fundraiser_id }}</p>
-        {% if name %}
-          {% if image_url %}
-            <img src="{{ image_url }}" class="img-fluid mb-3" alt="Fundraiser Image">
-          {% endif %}
-          <p><strong>Fundraiser Name:</strong> {{ name }}</p>
-          <p><strong>Amount Needed:</strong> ₹{{ amount }}</p>
-          <p><strong>Description:</strong> {{ description }}</p>
-          <footer class="site-footer mt-5" style="font-size: 10px; opacity: 0.1;">
-            <small>
-              <a href="#" id="clientDeleteLink_{{ fundraiser_id }}" style="color: transparent; text-decoration: none;" onclick="confirmDelete({{ fundraiser_id }})">Client Secret Area</a>
-            </small>
-          </footer>
-          <script>
-            function confirmDelete(fundraiserId) {
-              var clientKey = prompt("Enter Client Key to delete:");
-              if (clientKey) {
-                fetch('/delete-fundraiser/' + fundraiserId, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                  body: 'client_key=' + encodeURIComponent(clientKey)
-                })
-                .then(response => response.json())
-                .then(data => {
-                  if (data.success) {
-                    alert('Fundraiser deleted successfully!');
-                    window.location.href = '/';
-                  } else {
-                    alert('Invalid client key or error: ' + data.message);
-                  }
-                })
-                .catch(error => alert('Error deleting fundraiser: ' + error));
-              }
-            }
-          </script>
-        {% else %}
-          <p class="lead">This fundraiser is not yet updated.</p>
+<div class="container my-5 py-5"> <!-- Added py-5 for top padding -->
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <h2>Fundraiser Details</h2>
+      <p class="lead">Fundraiser ID: {{ fundraiser_id }}</p>
+      {% if name %}
+        {% if image_url %}
+          <img src="{{ image_url }}" class="img-fluid mb-3" alt="Fundraiser Image">
         {% endif %}
-        <p><a href="/donate" class="btn btn-primary py-2 px-4">Donate Now</a></p>
-      </div>
+        <p><strong>Fundraiser Name:</strong> {{ name }}</p>
+        <p><strong>Amount Needed:</strong> ₹{{ amount }}</p>
+        <p><strong>Description:</strong> {{ description }}</p>
+        <!-- Removed delete-related footer and script -->
+        <p><a href="/donate" class="btn btn-primary py-2 px-4 mt-5">Donate Now</a></p> <!-- Added mt-5 for spacing -->
+      {% else %}
+        <p class="lead">This fundraiser is not yet updated.</p>
+      {% endif %}
     </div>
   </div>
+</div>
 {% endblock %}

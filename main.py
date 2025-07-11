@@ -252,9 +252,16 @@ def get_access_token():
 @app.route('/process-donation', methods=['POST'])
 def process_donation():
     data = request.get_json()
+    print("Received donation request:", data)  # ✅ Log this first
+
     donor_name = data.get('donor-name')
     donor_email = data.get('donor-email')
-    amount = int(float(data.get('custom-amount')) * 100)
+
+    try:
+        amount = int(float(data.get('custom-amount')) * 100)
+    except (ValueError, TypeError) as e:
+        print("Invalid amount:", data.get('custom-amount'))  # 🧩 Add this too
+        return jsonify({"error": "Invalid donation amount"}), 400
 
     order_data = {
         "amount": amount,
@@ -270,6 +277,7 @@ def process_donation():
         return jsonify({"order_id": order['id']})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/verify-payment', methods=['POST'])
 def verify_payment():

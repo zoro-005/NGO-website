@@ -315,6 +315,12 @@
       const loadingOverlay = document.getElementById('loading-overlay');
       loadingOverlay.style.display = 'flex';
 
+      console.log("Sending to backend:", {
+        'donor-name': donorName,
+        'donor-email': donorEmail,
+        'custom-amount': amount
+      });
+      
       fetch('/process-donation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

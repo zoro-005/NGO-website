@@ -44,9 +44,10 @@ def apply_security_headers(response):
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Content-Security-Policy'] = (
-        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.juicer.io; "
+        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.juicer.io https://static.juicer.io; "
         "script-src 'self' 'unsafe-inline' https://code.jquery.com https://www.juicer.io; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.juicer.io; "
+        "font-src 'self' https://fonts.gstatic.com https://static.juicer.io; "
         "img-src 'self' data: https:; "
         "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.juicer.io;"
     )

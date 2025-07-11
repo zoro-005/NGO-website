@@ -32,7 +32,7 @@
         <div id="fundraiserForm" {% if show_modal %}style="display: none;"{% endif %}>
           <div class="card shadow-sm p-4"> <!-- Card for better elevation and padding -->
             <form method="POST" action="{{ url_for('submit_fundraiser') }}" enctype="multipart/form-data">
-              {{ csrf_token() }}
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <div class="form-group">
                 <label for="fundraiser_name">Fundraiser Name</label>
                 <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required minlength="2">

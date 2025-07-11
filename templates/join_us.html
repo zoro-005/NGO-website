@@ -26,7 +26,7 @@
                 <div class="form-volunteer">
                     <h2 style = "font-weight: 900; color:black; text-decoration:underline;">Be A Volunteer Today</h2>
                     <form action="/join_us" method="post" onsubmit="return validateForm()">
-                        {{ csrf_token() }}
+                        {{ csrf_token() | safe}}
                         <div class="form-group">
                           <input type="text" class="form-control px-3 py-3" name="name" id="name" placeholder="Your Name" required minlength="2">
                         </div>

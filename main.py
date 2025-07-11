@@ -11,12 +11,18 @@ import razorpay
 import os
 import requests
 import json
+import sys
 import pymysql
 pymysql.install_as_MySQLdb()
 import logging
 
 load_dotenv()
-logging.basicConfig(level=logging.DEBUG)
+
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.DEBUG,
+    format='%(levelname)s:%(name)s: %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')

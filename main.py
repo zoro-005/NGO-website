@@ -14,16 +14,16 @@ import json
 import sys
 import pymysql
 pymysql.install_as_MySQLdb()
-import logging
+# import logging
 
 load_dotenv()
 
-logging.basicConfig(
-    stream=sys.stdout,
-    level=logging.DEBUG,
-    format='%(levelname)s:%(name)s: %(message)s'
-)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(
+#     stream=sys.stdout,
+#     level=logging.DEBUG,
+#     format='%(levelname)s:%(name)s: %(message)s'
+# )
+# logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Ensure this is set in Railway Variables
@@ -259,7 +259,7 @@ def get_access_token():
 @csrf.exempt
 def process_donation():
     data = request.get_json()
-    logger.debug("Received donation request: %s", data)  # ✅ log input
+    # logger.debug("Received donation request: %s", data)  # ✅ log input
 
     donor_name = data.get('donor-name')
     donor_email = data.get('donor-email')
@@ -267,7 +267,7 @@ def process_donation():
     try:
         amount = int(float(data.get('custom-amount')) * 100)
     except (ValueError, TypeError) as e:
-        logger.error("Invalid amount: %s", data.get('custom-amount'))  # 🧩 clearer log
+        # logger.error("Invalid amount: %s", data.get('custom-amount'))  # 🧩 clearer log
         return jsonify({"error": "Invalid donation amount"}), 400
 
     order_data = {
@@ -279,13 +279,13 @@ def process_donation():
             "email": donor_email
         }
     }
-    logger.debug("Final order data: %s", order_data)  # ✅ log Razorpay payload
+    # logger.debug("Final order data: %s", order_data)  # ✅ log Razorpay payload
 
     try:
         order = razorpay_client.order.create(data=order_data)
         return jsonify({"order_id": order['id']})
     except Exception as e:
-        logger.error("Razorpay order creation failed: %s", str(e))  # ❗ key debug output
+        # logger.error("Razorpay order creation failed: %s", str(e))  # ❗ key debug output
         return jsonify({"error": str(e)}), 500
 
 

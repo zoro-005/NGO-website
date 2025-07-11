@@ -19,7 +19,7 @@ load_dotenv()
 # logging.basicConfig(level=logging.DEBUG)
 # logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Ensure this is set in Railway Variables
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_SECURE'] = True  # Forces cookies to use HTTPS

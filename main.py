@@ -256,6 +256,7 @@ def get_access_token():
     return response.json()['access_token']
 
 @app.route('/process-donation', methods=['POST'])
+@csrf.exempt
 def process_donation():
     data = request.get_json()
     logger.debug("Received donation request: %s", data)  # ✅ log input
@@ -289,6 +290,7 @@ def process_donation():
 
 
 @app.route('/verify-payment', methods=['POST'])
+@csrf.exempt
 def verify_payment():
     from hashlib import sha256
     import hmac
@@ -405,6 +407,7 @@ class PayPalClient:
 paypal_client = PayPalClient()
 
 @app.route('/create-paypal-order', methods=['POST'])
+@csrf.exempt
 def create_paypal_order():
     data = request.get_json()
     # logger.debug(f"Received data: {data}")
@@ -426,6 +429,7 @@ def create_paypal_order():
     return jsonify({'orderID': order_response['id']})
 
 @app.route('/capture-paypal-payment', methods=['POST'])
+@csrf.exempt
 def capture_paypal_payment():
     data = request.get_json()
     order_id = data.get('orderID')

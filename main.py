@@ -13,11 +13,11 @@ import requests
 import json
 import pymysql
 pymysql.install_as_MySQLdb()
-# import logging
+import logging
 
 load_dotenv()
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Ensure this is set in Railway Variables
@@ -252,7 +252,7 @@ def get_access_token():
 @app.route('/process-donation', methods=['POST'])
 def process_donation():
     data = request.get_json()
-    print("Received donation request:", data)  # ✅ Log this first
+    logger.debug("Received donation request: %s", data)  # ✅ log input
 
     donor_name = data.get('donor-name')
     donor_email = data.get('donor-email')
@@ -260,7 +260,7 @@ def process_donation():
     try:
         amount = int(float(data.get('custom-amount')) * 100)
     except (ValueError, TypeError) as e:
-        print("Invalid amount:", data.get('custom-amount'))  # 🧩 Add this too
+        logger.error("Invalid amount: %s", data.get('custom-amount'))  # 🧩 clearer log
         return jsonify({"error": "Invalid donation amount"}), 400
 
     order_data = {
@@ -272,11 +272,13 @@ def process_donation():
             "email": donor_email
         }
     }
+    logger.debug("Final order data: %s", order_data)  # ✅ log Razorpay payload
+
     try:
         order = razorpay_client.order.create(data=order_data)
         return jsonify({"order_id": order['id']})
     except Exception as e:
-        print("Razorpay order creation failed:", str(e))  # 🔍 Add this
+        logger.error("Razorpay order creation failed: %s", str(e))  # ❗ key debug output
         return jsonify({"error": str(e)}), 500
 
 

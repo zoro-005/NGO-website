@@ -96,7 +96,7 @@
             </div>
             <div class="modal-body">
               <form method="POST" action="{{ url_for('authenticate_client') }}">
-                {{ csrf_token() | safe}}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                   <label for="client_key">Client Key</label>
                   <input type="password" class="form-control" id="client_key" name="client_key" required minlength="8">

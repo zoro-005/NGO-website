@@ -586,6 +586,15 @@ class RestrictMethodsMiddleware:
             start_response('405 Method Not Allowed', [('Content-Type', 'text/plain')])
             return [b'Method Not Allowed']
         return self.app(environ, start_response)
+    
+@app.route('/debug')
+def debug():
+    fundraisers = get_latest_fundraisers()
+    return str(fundraisers)
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
 
 app.wsgi_app = RestrictMethodsMiddleware(app.wsgi_app)
 

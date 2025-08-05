@@ -19,6 +19,13 @@
 
   <div class="site-section">
     <div class="container">
+      <div id="photo-gallery" class="row">
+        </div>
+    </div>
+  </div>
+
+  <!-- <div class="site-section">
+    <div class="container">
       <div class="row">
         <div class="col-md-4">
           <a href="images/img_1.jpg" class="img-hover" data-fancybox="gallery">
@@ -97,7 +104,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- <div class="featured-section overlay-color-2" style="background-image: url('images/bg_2.jpg');">
     
@@ -139,4 +146,45 @@
 
   </div>  -->
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const galleryContainer = document.getElementById("photo-gallery");
+    
+        // We can use url_for() directly here because this script is inside the template!
+        const jsonPath = "{{ url_for('static', filename='images.json') }}";
+    
+        fetch(jsonPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(imageFilenames => {
+                let galleryHTML = ""; // Build the HTML in a variable for better performance
+    
+                imageFilenames.forEach(filename => {
+                    // We also use url_for() here to generate the correct image path
+                    const imageUrl = "{{ url_for('static', filename='images/') }}" + filename;
+    
+                    // Add the HTML for one image to our variable
+                    galleryHTML += `
+                        <div class="col-md-4 mb-4">
+                            <a href="${imageUrl}" class="img-hover" data-fancybox="gallery">
+                                <span class="icon icon-search"></span>
+                                <img src="${imageUrl}" alt="Gallery image" class="img-fluid" loading="lazy">
+                            </a>
+                        </div>
+                    `;
+                });
+    
+                // Set the container's HTML all at once at the end
+                galleryContainer.innerHTML = galleryHTML;
+            })
+            .catch(error => {
+                console.error("Could not load gallery:", error);
+                galleryContainer.innerHTML = "<p>Sorry, the photo gallery could not be loaded.</p>";
+            });
+    });
+    </script>
   {% endblock %}

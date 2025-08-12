@@ -5,7 +5,7 @@
       <div class="col-md-10 text-center">
         <h2 class="mb-4">Success Story Details - Story {{ story_id }}</h2>
         {% if story_data %}
-          <img src="{{ story_data.image }}" alt="{{ story_data.title }} Image" class="img-fluid mb-4" style="max-height: 300px; object-fit: cover;">
+          <img src="url({{url_for('static',filename='images/img.jpg')}});" alt="{{ story_data.title }} Image" class="img-fluid mb-4" style="max-height: 300px; object-fit: cover;">
           <h3>{{ story_data.title }}</h3>
           <p class="lead">{{ story_data.description }}</p>
           <p><em>Impact: {{ story_data.impact }}</em></p>

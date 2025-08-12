@@ -376,14 +376,14 @@ class PayPalClient:
                     "quantity": "1",
                     "description": f"Donation from {donor_email}"
                 }],
-                "description": f"Donation to Your NGO by {donor_name}",
+                "description": f"Donation to Sankalap Ek Sewa Foundation by {donor_name}",
                 "custom_id": donor_name,
                 "soft_descriptor": "NGO DONATION"
             }],
             "application_context": {
                 "return_url": url_for('capture_paypal_payment', _external=True),
                 "cancel_url": url_for('donate', _external=True),
-                "brand_name": "Your NGO",
+                "brand_name": "Sankalap Ek Sewa Foundation",
                 "locale": "en-IN",
                 "shipping_preference": "NO_SHIPPING"
             }

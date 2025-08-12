@@ -1,19 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="container my-5 pt-5"> <!-- Added pt-5 for navbar spacing -->
-    <div class="row justify-content-center">
-      <div class="col-md-10 text-center">
-        <h2 class="mb-4">Success Story Details - Story {{ story_id }}</h2>
-        {% if story_data %}
-          <img src="url({{url_for('static',filename='images/img.jpg')}});" alt="{{ story_data.title }} Image" class="img-fluid mb-4" style="max-height: 300px; object-fit: cover;">
-          <h3>{{ story_data.title }}</h3>
-          <p class="lead">{{ story_data.description }}</p>
-          <p><em>Impact: {{ story_data.impact }}</em></p>
-          <p><a href="/" class="btn btn-primary py-2 px-4">Back to home page</a></p>
-        {% else %}
-          <p class="lead">No details available for Story {{ story_id }}. Check back later!</p>
-        {% endif %}
-      </div>
+<div class="container my-5 pt-5"> <div class="row justify-content-center">
+        <div class="col-md-10 text-center">
+            <h2 class="mb-4">Success Story Details - Story {{ story_id }}</h2>
+            {% if story_data %}
+                <img src="{{ url_for('static', filename='images/img.jpg') }}" alt="{{ story_data.title }} Image" class="img-fluid mb-4" style="max-height: 300px; object-fit: cover;">
+                <h3>{{ story_data.title }}</h3>
+                <p class="lead">{{ story_data.description }}</p>
+                <p><em>Impact: {{ story_data.impact }}</em></p>
+                <p><a href="/" class="btn btn-primary py-2 px-4">Back to home page</a></p>
+            {% else %}
+                <p class="lead">No details available for Story {{ story_id }}. Check back later!</p>
+            {% endif %}
+        </div>
     </div>
-  </div>
+</div>
 {% endblock %}

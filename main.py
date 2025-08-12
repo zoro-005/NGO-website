@@ -247,7 +247,7 @@ razorpay_client = razorpay.Client(auth=(os.getenv("RAZORPAY_KEY_ID"), os.getenv(
 def get_access_token():
     auth = (os.getenv("PAYPAL_CLIENT_ID"), os.getenv("PAYPAL_CLIENT_SECRET"))
     response = requests.post(
-        'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+        'https://api-m.paypal.com/v1/oauth2/token',
         auth=auth,
         data={'grant_type': 'client_credentials'},
         headers={'Accept': 'application/json'}
@@ -345,7 +345,7 @@ def verify_payment():
     
 class PayPalClient:
     def __init__(self):
-        self.base_url = 'https://api-m.sandbox.paypal.com'
+        self.base_url = 'https://api-m.paypal.com'
         self.access_token = get_access_token()
 
     def create_order(self, amount, donor_name, donor_email):
@@ -548,7 +548,7 @@ def success_story(story_id):
         1: {
             'title': "🐾 A New Dawn for Animal Welfare: SESF Launches Meerut’s First Animal Ambulance",
             'image': "https://via.placeholder.com/600x300?text=Lucky's+Recovery",
-            'description': """In a heartfelt move that blends compassion with action, SESF—Sardhana Environmental and Social Foundation—made history by introducing Meerut’s first dedicated animal ambulance. This transformative leap in animal welfare was made possible thanks to the generous donation from Maneka Gandhi, a towering advocate for animal rights in India.
+            'description': """In a heartfelt move that blends compassion with action, SESF—Sankalap Ek Sewa Foundation — made history by introducing Meerut’s first dedicated animal ambulance. This transformative leap in animal welfare was made possible thanks to the generous donation from Maneka Gandhi, a towering advocate for animal rights in India.
             Her contribution wasn’t just a van outfitted with medical supplies. It was a rolling sanctuary, purpose-built for rescuing, treating, and transporting injured or distressed animals across the region. For SESF, this vehicle represents more than convenience—it’s a declaration of their mission to ensure that animals, too, receive timely care and dignity.
             When the ambulance arrived, wrapped in anticipation and promise, the SESF team wasted no time. Soon, it was on its first call—responding to a wounded street dog that had been struck by a vehicle. With proper equipment and trained volunteers, the ambulance offered care on the spot, changing the narrative for countless animals who would’ve otherwise been forgotten.
             Our director shared: “Before this, our response was limited. We had heart, but no wheels. Now we can reach any corner of Meerut, and that changes everything.”

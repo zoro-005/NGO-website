@@ -175,9 +175,9 @@
         "key": "{{ key_id }}",
         "amount": amount * 100,
         "currency": "INR",
-        "name": "Your NGO Name",
+        "name": "Sankalap Ek Sewa Foundation",
         "description": "Donation",
-        "image": "/static/images/ngo-logo.png",
+        "image": "{{url_for('static',filename='images/logo.png')}}",
         "order_id": orderId,
         "handler": function (response) {
           fetch('/verify-payment', {

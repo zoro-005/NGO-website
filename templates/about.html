@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}" nonce="{{ csp_nonce }}">
 <div class="block-31 block-31-relative">
   <div class="owl-carousel loop-block-31">
       <div class="block-30 block-30-sm item bg-hero-1" data-stellar-background-ratio="0.5">

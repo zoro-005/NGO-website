@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/submit_fundraiser.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/submit_fundraiser.css') }}" nonce="{{ csp_nonce }}">
 
 <div id="fundraiser-data"
      data-submit-url="{{ url_for('submit_fundraiser') }}"
@@ -72,6 +72,6 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/submit_fundraiser.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/submit_fundraiser.js') }}" defer nonce="{{ csp_nonce }}"></script>
 
 {% endblock %}

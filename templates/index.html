@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   <!-- END nav -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }} ">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }} " nonce="{{ csp_nonce }}">
 
   <div class="block-31 block-31-relative">
     <div class="owl-carousel loop-block-31 ">
@@ -113,7 +113,7 @@
   
   <!-- Juicer embed script -->
   <script nonce="{{ csp_nonce }}" type="text/javascript" 
-    src="https://www.juicer.io/embed/sankalapeksewa/embed-code.js?per=6&theme=light" 
+    src="https://www.juicer.io/embed/sankalapeksewa/embed-code.js?per=6" 
     async defer></script>
   
   <!-- Your expand logic -->

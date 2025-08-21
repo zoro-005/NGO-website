@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/join_us.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/join_us.css') }}" nonce="{{ csp_nonce }}">
 
 <div class="block-31 relative-position">
     <div class="owl-carousel loop-block-31">
@@ -60,7 +60,7 @@
 
       <!-- Right: Image -->
       <div class="col-md-6 text-center d-flex align-items-center justify-content-center">
-        <img src="{{ url_for('static', filename='images/img.jpg') }}"
+        <img src="{{ url_for('static', filename='images/img_join.jpg') }}"
              alt="Volunteer with animals" 
              class="img-fluid rounded shadow-lg volunteer-image">
       </div>
@@ -68,6 +68,6 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/join_us.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/join_us.js') }}" defer nonce="{{ csp_nonce }}"></script>
 
 {% endblock %}

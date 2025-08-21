@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/success_story.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/success_story.css') }}" nonce="{{ csp_nonce }}">
 <div class="container my-5 pt-5">
     <div class="row justify-content-center">
         <div class="col-md-10 text-center">

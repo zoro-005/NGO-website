@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   <!-- END nav -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}" nonce="{{ csp_nonce }}">
 
   <div class="block-31">
     <div class="owl-carousel loop-block-31">
@@ -27,5 +27,5 @@
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='js/gallery.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/gallery.js') }}" defer nonce="{{ csp_nonce }}"></script>
 {% endblock %}

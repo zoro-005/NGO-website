@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}" nonce="{{ csp_nonce }}">
 <div class="block-31">
   <div class="owl-carousel loop-block-31 ">
     <div class="block-30 block-30-sm item bg-contact" data-stellar-background-ratio="0.5">
@@ -46,7 +46,7 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/contact.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/contact.js') }}" defer nonce="{{ csp_nonce }}"></script>
 
 {% if success_message %}
 <div id="success-flag" data-message="true"></div>

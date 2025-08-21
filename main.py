@@ -55,13 +55,13 @@ def apply_security_headers(response):
     g.csp_nonce = nonce  
 
     response.headers['Content-Security-Policy'] = (
-    "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;"
-    "script-src 'self' https://code.jquery.com https://www.juicer.io https://checkout.razorpay.com https://www.paypal.com;"
-    "style-src 'self' https://fonts.googleapis.com https://www.juicer.io;"
-    "font-src 'self' https://fonts.gstatic.com https://static.juicer.io;"
-    "img-src 'self' data: https:;"
-    "frame-src 'self' https://www.juicer.io https://www.google.com https://www.google.com/maps/embed https://maps.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://api.razorpay.com;"
-    "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.juicer.io http://www.juicer.io https://api.juicer.io;"
+        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;"
+        "script-src 'self' 'nonce-{nonce}' https://code.jquery.com https://www.juicer.io https://checkout.razorpay.com https://www.paypal.com;"
+        "style-src 'self' 'nonce-{nonce}' https://fonts.googleapis.com https://www.juicer.io;"
+        "font-src 'self' https://fonts.gstatic.com https://static.juicer.io;"
+        "img-src 'self' data: https:;"
+        "frame-src 'self' https://www.juicer.io https://www.google.com https://www.google.com/maps/embed https://maps.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://api.razorpay.com;"
+        "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.juicer.io http://www.juicer.io https://api.juicer.io https://www.paypal.com;" 
     ).format(nonce=nonce)
 
     return response
@@ -148,7 +148,7 @@ limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
 
 @app.route('/authenticate-client', methods=['POST'])
-@limiter.limit("10 per hour")  # Limit to 10 attempts per IP per hour
+@limiter.limit("3 per hour")  # Limit to 3 attempts per IP per hour
 def authenticate_client():
     client_key = os.getenv('CLIENT_KEY')
     provided_key = request.form.get('client_key')
@@ -295,7 +295,7 @@ def process_donation():
         return jsonify({"order_id": order['id']})
     except Exception as e:
         # logger.error("Razorpay order creation failed: %s", str(e))  # ❗ key debug output
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Payment failed. Please try again later"}), 500
 
 
 @app.route('/verify-payment', methods=['POST'])
@@ -504,13 +504,13 @@ def capture_paypal_payment():
         return jsonify({'status': 'success', 'redirect_url': url_for('donation_success', _external=True)})
     except requests.exceptions.RequestException as e:
         #logger.error(f"Payment capture failed: {str(e)}")
-        return jsonify({'status': 'failure', 'error': str(e)}), 400
+        return jsonify({'status': 'failure', 'error': "Error occured. Please try again later."}), 400
     except (KeyError, ValueError) as e:
         #logger.error(f"Invalid capture response: {str(e)}")
-        return jsonify({'status': 'failure', 'error': f"Invalid response data: {str(e)}"}), 400
+        return jsonify({'status': 'failure', 'error': f"Invalid response data: Error occured. Please try again later."}), 400
     except Exception as e:
         #logger.error(f"Unexpected error: {str(e)}")
-        return jsonify({'status': 'failure', 'error': str(e)}), 500
+        return jsonify({'status': 'failure', 'error': "Error occured. Please try again later."}), 500
 
 @app.route('/donation-success')
 def donation_success():
@@ -657,4 +657,4 @@ create_tables()
 # if __name__ == '__main__':
 #     with app.app_context():
 #         db.create_all()
-#     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=False)
+#     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=True)

@@ -1,0 +1,39 @@
+.bg-joinus {
+    background-image: url("../images/bg_5.jpg");
+  }
+  
+  .form-heading {
+    font-weight: 900 !important;
+    color: black !important;
+    text-decoration: underline ;
+  }
+  /* Form styling black theme */
+.form-volunteer .form-control {
+  border: 2px solid black !important;
+  background-color: #fff !important;
+  color: black !important;
+}
+
+.form-volunteer .form-control::placeholder {
+  color: black !important;
+  opacity: 0.7;
+}
+
+.form-volunteer input[type="submit"] {
+  background-color: black !important;
+  border: none !important;
+  color: white !important;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.form-volunteer input[type="submit"]:hover {
+  background-color: #333 !important;
+}
+
+/* Right side image */
+.volunteer-image {
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+}

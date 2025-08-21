@@ -1,0 +1,30 @@
+/* Positioning for block-31 containers */
+.block-31-relative {
+    position: relative;
+}
+
+/* Hero Section Background */
+.bg-hero-1 {
+    background-image: url('../images/bg_3.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Carousel Background Images for second section */
+.bg-hero-2 { background-image: url('../images/bg_1.jpg'); background-size: cover; background-position: center; }
+.bg-hero-3 { background-image: url('../images/bg_2.jpg'); background-size: cover; background-position: center; }
+.bg-hero-4 { background-image: url('../images/bg_3.jpg'); background-size: cover; background-position: center; }
+.bg-hero-5 { background-image: url('../images/bg_4.jpg'); background-size: cover; background-position: center; }
+.bg-hero-6 { background-image: url('../images/bg_5.jpg'); background-size: cover; background-position: center; }
+.bg-hero-7 { background-image: url('../images/bg_6.jpg'); background-size: cover; background-position: center; }
+.bg-hero-8 { background-image: url('../images/bg_7.jpg'); background-size: cover; background-position: center; }
+.bg-hero-9 { background-image: url('../images/bg_8.jpg'); background-size: cover; background-position: center; }
+.bg-hero-10 { background-image: url('../images/bg_9.jpg'); background-size: cover; background-position: center; }
+.bg-hero-11 { background-image: url('../images/bg_10.jpg'); background-size: cover; background-position: center; }
+.bg-hero-12 { background-image: url('../images/bg_11.jpg'); background-size: cover; background-position: center; }
+
+/* No Overlay Items */
+.block-30.no-overlay {
+    background-size: cover;
+    background-position: center;
+}

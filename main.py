@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, url_for, jsonify, session, make_response
+from flask import Flask, render_template, request, redirect, flash, url_for, jsonify, session, make_response, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
@@ -13,6 +13,7 @@ import requests
 import json
 import sys
 import pymysql
+import secrets
 pymysql.install_as_MySQLdb()
 # import logging
 
@@ -49,18 +50,26 @@ def apply_security_headers(response):
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+
+    nonce = secrets.token_urlsafe(16)
+    g.csp_nonce = nonce  
+
     response.headers['Content-Security-Policy'] = (
-    "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.juicer.io https://static.juicer.io https://www.google.com https://maps.googleapis.com https://maps.gstatic.com;"
-    "script-src 'self' 'unsafe-inline' https://code.jquery.com https://www.juicer.io https://checkout.razorpay.com https://www.paypal.com;"
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.juicer.io;"
+    "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;"
+    "script-src 'self' https://code.jquery.com https://www.juicer.io https://checkout.razorpay.com https://www.paypal.com;"
+    "style-src 'self' https://fonts.googleapis.com https://www.juicer.io;"
     "font-src 'self' https://fonts.gstatic.com https://static.juicer.io;"
     "img-src 'self' data: https:;"
-    "frame-src 'self' https://www.google.com https://www.google.com/maps/embed https://maps.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://api.razorpay.com;"
-    "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.juicer.io;"
-    )
-
+    "frame-src 'self' https://www.juicer.io https://www.google.com https://www.google.com/maps/embed https://maps.googleapis.com https://www.paypal.com https://www.sandbox.paypal.com https://api.razorpay.com;"
+    "connect-src 'self' https://api.razorpay.com https://api-m.sandbox.paypal.com https://www.juicer.io http://www.juicer.io https://api.juicer.io;"
+    ).format(nonce=nonce)
 
     return response
+
+
+@app.context_processor
+def inject_nonce():
+    return dict(csp_nonce=getattr(g, "csp_nonce", ""))
 
 
 # Database configuration
@@ -146,7 +155,7 @@ def authenticate_client():
     if provided_key == client_key:
         session['authenticated'] = True
         return redirect(url_for('submit_fundraiser'))
-    flash('Invalid client key. Access denied.')
+    flash('Invalid client key. Access denied.', 'warning')
     return redirect(url_for('home'))
 
 # Routes
@@ -194,10 +203,10 @@ def contact():
                           """)
             mail.send(msg)
 
-            flash('Message sent successfully!')
+            flash('Message sent successfully!', 'success')
             return redirect(url_for('contact', success_message=True))
         else:
-            flash('Please fill in all fields.', 'error')
+            flash('Please fill in all fields.', 'danger')
     success_message = request.args.get('success_message')
     return render_template('contact.html', success_message=success_message)
 
@@ -233,10 +242,10 @@ def join_us():
                           """)
             mail.send(msg)
 
-            flash('Thank you for signing up as a volunteer!')
+            flash("Thank you for signing up as a volunteer! We'll contact you shortly.", 'success')
             return redirect(url_for('join_us', success_message=True))
         else:
-            flash('Please fill in all fields.', 'error')
+            flash('Please fill in all fields.', 'danger')
     success_message = request.args.get('success_message')
     return render_template('join_us.html', success_message=success_message)
 
@@ -506,7 +515,7 @@ def capture_paypal_payment():
 @app.route('/donation-success')
 def donation_success():
     if not session.get('just_donated'):
-        flash('You must complete a donation to view this page.', 'error')
+        flash('You must complete a donation to view this page.', 'danger')
         return redirect(url_for('donate'))
     
     session.pop('just_donated', None)
@@ -563,11 +572,32 @@ def success_story(story_id):
 # @app.route('/success/all')
 # def success_all():
 #     return render_template('success_all.html')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+import imghdr
+
+def is_image(file_path):
+    return imghdr.what(file_path) in ['jpeg', 'png', 'gif', 'webp']
+
+# Limit upload size to 5 MB
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
+
+from werkzeug.exceptions import RequestEntityTooLarge
+
+@app.errorhandler(RequestEntityTooLarge)
+def handle_large_file(e):
+    flash("Uploaded file is too large. Maximum allowed size is 5 MB.", "danger")
+    return redirect(url_for('submit_fundraiser'))
+
 
 @app.route('/submit-fundraiser', methods=['GET', 'POST'])
 def submit_fundraiser():
     if request.method == 'POST' and not session.get('authenticated', False):
-        flash('Please authenticate first.')
+        flash('Please authenticate first.', 'danger')
         return redirect(url_for('home'))
     if request.method == 'POST' and session.get('authenticated', False):
         name = request.form.get('fundraiser_name')
@@ -575,11 +605,18 @@ def submit_fundraiser():
         description = request.form.get('description')
         image = request.files.get('image')
         if not image or not image.filename:
-            flash('Image attachment is required.')
+            flash('Image attachment is required.', 'warning')
+            return render_template('submit_fundraiser.html', show_modal=False)
+        if not allowed_file(image.filename):
+            flash('Invalid file type. Only JPG, PNG, GIF, WEBP are allowed.', 'warning')
             return render_template('submit_fundraiser.html', show_modal=False)
         filename = secure_filename(image.filename)
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         image.save(image_path)
+        if not is_image(image_path):
+            os.remove(image_path)  # Delete malicious file
+            flash('Invalid image file uploaded.', 'warning')
+            return render_template('submit_fundraiser.html', show_modal=False)
         image_url = url_for('static', filename=f'images/{filename}')
         values = [datetime.now().isoformat(), name, amount, description, image_url]
         sheet = service.spreadsheets()
@@ -590,7 +627,7 @@ def submit_fundraiser():
             body={'values': [values]}
         ).execute()
         session.pop('authenticated', None)
-        flash('Fundraiser updated successfully!')
+        flash('Fundraiser updated successfully!', 'success')
         return redirect(url_for('home'))
     show_modal = not session.get('authenticated', False)
     return render_template('submit_fundraiser.html', show_modal=show_modal)
@@ -614,10 +651,9 @@ class RestrictMethodsMiddleware:
 
 app.wsgi_app = RestrictMethodsMiddleware(app.wsgi_app)
 
-# Call it at the end of the file, after all models are defined
 create_tables()
 
-
+# comment this in production
 # if __name__ == '__main__':
 #     with app.app_context():
 #         db.create_all()

@@ -1,0 +1,74 @@
+.bg-index {
+    background-image: url("../images/bg_1.jpg");
+  }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse-animation {
+      animation: pulse 1.5s infinite;
+    }
+
+    .juicer-feed .item {
+      margin: 5px;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .juicer-feed .item:hover {
+      transform: scale(1.05); /* Slight hover effect for elegance */
+    }
+
+    .juicer-feed-container .juicer-feed .item {
+      display: none; /* Hide all initially */
+    }
+
+    .juicer-feed-container .juicer-feed .item.visible {
+      display: block; /* Show visible items */
+    }
+
+    /* Limit to 1 row initially */
+    .juicer-feed-container .juicer-feed {
+      overflow: hidden;
+    }
+
+    .juicer-feed-container .juicer-feed.row-1 .item {
+      display: block; /* Show only 1 row initially */
+    }
+
+    #expand-btn {
+      position: relative;
+      z-index: 1001;
+      display: none;
+    }
+  
+    .block-31 { position: relative; }
+.featured-text { color: black; }
+.featured-heading { color: black; font-weight: 600; }
+.featured-paragraph { color: black; }
+.juicer-feed-container { position: relative; min-height: 220px; }
+.juicer-feed { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+.juicer-feed .item { display: none; } /* your logic still controls .visible */
+.juicer-feed .item.visible { display: block; }
+#expand-btn { display: none; }
+
+.featured-text-black{
+color: black !important;
+}
+.featured-heading-black{
+  color:black !important;
+   font-weight: 600 !important;
+}
+.featured-paragraph-black{
+  color: black !important;
+}
+.text-center-heading { text-align: center; }

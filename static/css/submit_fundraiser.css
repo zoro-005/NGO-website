@@ -1,0 +1,28 @@
+
+.show-modal {
+    display: block !important;
+}
+
+/* Hide fundraiser form initially */
+.hide-form {
+    display: none;
+}
+
+/* Container padding/margin */
+.container-top-padding {
+    padding-top: 3rem; /* replaces pt-5 */
+    margin-top: 3rem;  /* replaces my-5 */
+}
+
+.heading-margin {
+    margin-bottom: 1.5rem; /* replaces mb-4 */
+}
+
+.btn-spacing {
+    padding: 0.5rem 1rem;  /* replaces py-2 px-4 */
+    margin-top: 1rem;      /* replaces mt-3 */
+}
+
+.card-padding {
+    padding: 1rem;  /* replaces p-4 */
+}

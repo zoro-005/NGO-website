@@ -1,0 +1,141 @@
+/* Animations (from original) */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+.pulse-animation { animation: pulse 1.5s infinite; }
+
+/* Hero */
+.bg-donate {
+  background-image: url("../images/bg_6.jpg");
+}
+.block-31-relative { position: relative; }
+
+/* Forms layout + hidden by default (replaces inline display:none) */
+.form-wrapper {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Donations section */
+.donations-section { margin-top: 2rem; }
+.h3-center { text-align: center; } /* fixed selector */
+.donations-grid {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+}
+.donation-card {
+  flex: 1 1 250px;
+  max-width: 250px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+.no-donations { text-align: center; width: 100%; }
+
+/* Overlays */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.overlay--loading { animation: fadeIn 1s ease-in-out; }
+
+.overlay .status {
+  color: #fff;
+  font-size: 24px;
+  text-align: center;
+}
+.overlay .status .spinner-border { width: 3rem; height: 3rem; }
+
+/* Failure overlay content */
+#failure-overlay .box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+#failure-overlay h3 { color: #dc3545; margin-bottom: 15px; }
+#failure-message { color: #333; margin-bottom: 20px; }
+#timer-message   { color: #666; font-size: 14px; margin-bottom: 15px; }
+#failure-redirect-btn { padding: 10px 20px; }
+
+/* Make PayPal button occupy full width */
+#paypal-button-container {
+  width: 100% !important;
+}
+
+#paypal-button-container iframe {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+/* Recent Supporters Section */
+.donations-section {
+  margin-top: 2rem;
+}
+
+.h3-center {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.h3-center h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Recent Supporters Section */
+.donations-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* spacing between cards */
+  justify-content: center;
+}
+
+.donation-card {
+  flex: 1 1 280px;   /* wider cards */
+  max-width: 300px;  /* cap size */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.8rem;   /* tighter padding */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.donation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.donation-card h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.donation-card span {
+  display: block;
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.donation-card p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.donation-card p span {
+  color: #28a745;
+  font-weight: bold;
+}

@@ -1,73 +1,77 @@
 {% extends "layout.html" %}
 {% block body %}
-  <div class="container my-5 pt-5"> <!-- Increased top padding with pt-5 -->
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/submit_fundraiser.css') }}">
+
+<div id="fundraiser-data"
+     data-submit-url="{{ url_for('submit_fundraiser') }}"
+     data-show-modal="{% if show_modal %}true{% else %}false{% endif %}">
+</div>
+
+<div class="container container-top-padding"> 
     <div class="row justify-content-center">
-      <div class="col-md-8 text-center">
-        <h2 class="mb-4">Submit a Fundraiser</h2> <!-- Added margin below heading -->
+        <div class="col-md-8 text-center">
+            <h2 class="heading heading-margin">Submit a Fundraiser</h2>
 
-        <!-- Modal for Client Key -->
-        <div class="modal fade" id="clientKeyModal" tabindex="-1" role="dialog" {% if show_modal %}style="display: block;"{% endif %} aria-labelledby="clientKeyModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered"> <!-- Centered modal vertically -->
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="clientKeyModalLabel">Enter Client Key</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form method="POST" action="{{ url_for('submit_fundraiser') }}">
-                  <div class="form-group">
-                    <label for="client_key">Client Key</label>
-                    <input type="password" class="form-control" id="client_key" name="client_key" required>
-                  </div>
-                  <button type="submit" class="btn btn-primary btn-block">Submit</button> <!-- Full-width button -->
-                </form>
-              </div>
+            <!-- Modal for Client Key -->
+            <div class="modal fade{% if show_modal %} show{% endif %}" 
+              id="clientKeyModal" 
+              tabindex="-1" 
+              role="dialog" 
+              aria-labelledby="clientKeyModalLabel" 
+              aria-hidden="{{ 'false' if show_modal else 'true' }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="clientKeyModalLabel">Enter Client Key</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{{ url_for('submit_fundraiser') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="form-group">
+                                    <label for="client_key">Client Key</label>
+                                    <input type="password" class="form-control" id="client_key" name="client_key" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block btn-spacing">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Fundraiser Form -->
-        <div id="fundraiserForm" {% if show_modal %}style="display: none;"{% endif %}>
-          <div class="card shadow-sm p-4"> <!-- Card for better elevation and padding -->
-            <form method="POST" action="{{ url_for('submit_fundraiser') }}" enctype="multipart/form-data">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <div class="form-group">
-                <label for="fundraiser_name">Fundraiser Name</label>
-                <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required minlength="2">
-              </div>
-              <div class="form-group">
-                <label for="amount">Donation Amount (₹)</label>
-                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required min="1">
-              </div>
-              <div class="form-group">
-                <label for="description">Fundraiser Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" required minlength="10"></textarea>
-              </div>
-              <div class="form-group">
-                <label for="image">Upload Image (Required)</label>
-                <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
-              </div>
-              <button type="submit" class="btn btn-primary py-2 px-4 mt-3">Submit Fundraiser</button>
-            </form>
-          </div>
-        </div>
+            <!-- Fundraiser Form -->
+            <div id="fundraiserForm" class="{% if show_modal %}d-none{% endif %}">
+                <div class="card shadow-sm card-padding">
+                    <form method="POST" action="{{ url_for('submit_fundraiser') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="form-group">
+                            <label for="fundraiser_name">Fundraiser Name</label>
+                            <input type="text" class="form-control" id="fundraiser_name" name="fundraiser_name" required minlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Donation Amount (₹)</label>
+                            <input type="number" class="form-control" id="amount" name="amount" step="0.01" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Fundraiser Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required minlength="10"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Upload Image (Required)</label>
+                            <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-spacing">Submit Fundraiser</button>
+                    </form>
+                </div>
+            </div>
 
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            var modal = document.getElementById('clientKeyModal');
-            modal.addEventListener('hidden.bs.modal', function() {
-              if (!modal.dataset.authenticated) {
-                window.location.href = '{{ url_for('submit_fundraiser') }}';
-              }
-            });
-            {% if show_modal %}
-              $('#clientKeyModal').modal('show');
-            {% endif %}
-          });
-        </script>
-      </div>
+        </div>
     </div>
-  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/submit_fundraiser.js') }}" defer></script>
+
 {% endblock %}

@@ -10,7 +10,7 @@
             Thank You, {{ name|default('Donor') }}!
         </h1>
         <p class="lead animate__animated animate__fadeIn">
-            Your generous donation of {{ currency_symbol }}{{ amount|default('XXX') }} has been successfully processed.
+            Your generous donation of {{ currency_symbol }}{{ amount|default('XXX') }} has been successfully received.
         </p>
     </div>
     <div class="hero-circle"></div>
@@ -23,7 +23,7 @@
             <div class="card shadow-sm p-4 text-center">
                 <h2 class="card-title mb-4">Donation Confirmation</h2>
                 <p class="card-text">
-                    Your contribution will help us provide clean water, education, and shelter to those in need. A receipt has been sent to {{ email|default('your email') }}.
+                    Your support helps us goes a long way in helping animals in need.. A receipt has been sent to {{ email|default('your email') }}.
                 </p>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>Name:</strong> {{ name|default('Anonymous') }}</li>

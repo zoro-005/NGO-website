@@ -1,1 +1,1 @@
-Website for NGO named "Sankalap ek Sewa Foundation". Insta handle @sesf.official, @sankalapeksewa and @maskman_rescuer. Look into these for images and all. The NGO is affiliated to @pfa.official. Take youtube, facebook links from insta. Client wants the website like "https://www.peopleforanimalsindia.org/". Images in website should include primarily dogs and cows. For more images visit "https://g.co/kgs/MsJKHuU". 
+sesf.in 
